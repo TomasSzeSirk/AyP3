@@ -167,7 +167,7 @@ inicializarDiccionarioDeHuevos
 	diccionarioDeHuevosDeAvispas at: 'Lara' put: 0.! !
 
 
-!ElHabitatDeLasAvispas class methodsFor: '--** private fileout/in **--' stamp: 'NC 4/23/2022 16:19:11'!
+!ElHabitatDeLasAvispas class methodsFor: '--** private fileout/in **--' stamp: 'NC 4/23/2022 18:05:25'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -189,22 +189,42 @@ DenotativeObject subclass: #LaAvispaLara
 LaAvispaLara class
 	instanceVariableNames: ''!
 
-!LaAvispaLara class methodsFor: 'reproduccion' stamp: 'NC 4/23/2022 16:11:01'!
+!LaAvispaLara class methodsFor: 'reproduccion: publico' stamp: 'NC 4/23/2022 18:05:11'!
 intentarReproducirse
+	
+	self sePuedeReproducirConHuevoDeOriana ifTrue: [ ^self ].
+	
+	self sePuedeReproducirConHuevoDeOrnella ifTrue: [ ^self ].
+	
+	self sePuedeReproducirConHuevoDePolly ifTrue: [ ^self ].! !
+
+
+!LaAvispaLara class methodsFor: 'verificacion de reproduccion: privado' stamp: 'NC 4/23/2022 18:04:10'!
+sePuedeReproducirConHuevoDeOriana
 	ElHabitatDeLasAvispas hayHuevosDeOriana ifTrue:
 	[ElHabitatDeLasAvispas restarHuevoDeOriana.
 	ElHabitatDeLasAvispas agregarHuevoDeLara.
-	^self].
+	^true].
+	^false.
+! !
 
+!LaAvispaLara class methodsFor: 'verificacion de reproduccion: privado' stamp: 'NC 4/23/2022 18:04:21'!
+sePuedeReproducirConHuevoDeOrnella
 	ElHabitatDeLasAvispas hayHuevosDeOrnella ifTrue:
 	[ElHabitatDeLasAvispas restarHuevoDeOrnella.
 	ElHabitatDeLasAvispas agregarHuevoDeLara.
-	^self].
-	
+	^true].
+	^false.
+! !
+
+!LaAvispaLara class methodsFor: 'verificacion de reproduccion: privado' stamp: 'NC 4/23/2022 18:04:28'!
+sePuedeReproducirConHuevoDePolly
 	ElHabitatDeLasAvispas hayHuevosDePolly ifTrue:
 	[ElHabitatDeLasAvispas restarHuevoDePolly.
 	ElHabitatDeLasAvispas agregarHuevoDeLara.
-	^self].! !
+	^true].
+	^false.
+! !
 
 
 !classDefinition: #LaAvispaOriana category: 'AvispasYAbejasParte2'!
