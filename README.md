@@ -33,9 +33,9 @@ En los metodos del mensaje #intentarReproducirse de los obejtos que representan 
 Creemos que como la firma genetica de los huevos de Oriana y Ornella son iguales, 
 podriamos haberlos hecho como si fueran un solo tipo de huevo en vez de separarlos por avispa.
 
-### Responsabilidad de dejar un huevo consumiendo otro insecto 
-¿Quién les quedó, en su modelo, que es el responsable de ver si hay suficientes polillas u orugas y entonces dejar un huevo?
-¿el insecto (Polly, Oriana, etc) o el hábitat?
+## Responsabilidad de dejar un huevo consumiendo otro insecto 
+### ¿Quién les quedó, en su modelo, que es el responsable de ver si hay suficientes polillas u orugas y entonces dejar un huevo?
+### ¿el insecto (Polly, Oriana, etc) o el hábitat?
 
 La avispa le pregunta Habitat y este comprueba si hay suficientes polillas u orugas para poder dejar un huevo.
 
