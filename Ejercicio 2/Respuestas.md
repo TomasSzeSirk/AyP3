@@ -17,3 +17,4 @@ En los test 01 y 02 hay código repetido. Cuando lo extrajeron crearon algo nuev
 
 ¿Qué relación hay entre sacar código repetido (creando abstracciones) y la teoría del modelo/sistema (del paper de Naur)?
 
+### Lo que buscan ambos sistemas es mejorar la manera en la cual se estructura y se utiliza el codigo de un programa para que sea mas prolijo y mas legible.
