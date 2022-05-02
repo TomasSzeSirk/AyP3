@@ -21,59 +21,33 @@ TestCase subclass: #CustomerBookTest
 	poolDictionaries: ''
 	category: 'CodigoRepetido-Ejercicio'!
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'NC 5/1/2022 15:02:18'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'NC 5/1/2022 23:55:23'!
 test01AddingCustomerShouldNotTakeMoreThan50Milliseconds
 
-	| customerBook millisecondsBeforeRunning millisecondsAfterRunning |
+	| customerBook tiempo |
 	
 	customerBook := CustomerBook new.
 	
-	millisecondsBeforeRunning := Time millisecondClockValue * millisecond.
-	customerBook addCustomerNamed: 'John Lennon'.
-	millisecondsAfterRunning := Time millisecondClockValue * millisecond.
+	tiempo := self tiempoQueTardaEn: [ customerBook addCustomerNamed: 'John Lennon'].
 	
-	self assert: (millisecondsAfterRunning-millisecondsBeforeRunning) < (50 * millisecond)
+	self assert: (tiempo) < (50 * millisecond).
 	
-	"
-	Modularización:
-	
-	tiempoQueLeTomaA: anObject En: aMethod a: aClient
-		
-		self tiempoQueLeTomaA: customerBook En: #addCustomerNamed: a: 'John Lennon'
-		
-	|----------------------|
-	
-	Implementación:
-	
-	tiempoQueLeTomaA: anObject En: aMethod a: aClient
-		
-		| millisecondsBeforeRunning millisecondsAfterRunning |
-		
-		millisecondsBeforeRunning := Time millisecondClockValue * millisecond.
-		anObject with: aClient executeMethod: aMethod.
-		millisecondsAfterRunning := Time millisecondClockValue * millisecond.
-		
-		^millisecondsAfterRunning - millisecondsBeforeRunning.
-	
-	"
-	
+
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'NR 4/3/2019 10:50:13'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'NC 5/1/2022 23:57:18'!
 test02RemovingCustomerShouldNotTakeMoreThan100Milliseconds
 
-	| customerBook millisecondsBeforeRunning millisecondsAfterRunning paulMcCartney |
+	| customerBook paulMcCartney tiempo |
 	
 	customerBook := CustomerBook new.
 	paulMcCartney := 'Paul McCartney'.
 	
 	customerBook addCustomerNamed: paulMcCartney.
 	  
-	millisecondsBeforeRunning := Time millisecondClockValue * millisecond.
-	customerBook removeCustomerNamed: paulMcCartney.
-	millisecondsAfterRunning := Time millisecondClockValue * millisecond.
+	tiempo := self tiempoQueTardaEn: [ customerBook removeCustomerNamed: paulMcCartney ].
 	
-	self assert: (millisecondsAfterRunning-millisecondsBeforeRunning) < (100 * millisecond)
+	self assert: (tiempo) < (100 * millisecond)
 	
 ! !
 
@@ -183,6 +157,17 @@ test08CanNotSuspendAnAlreadySuspendedCustomer
 			self assert: customerBook numberOfCustomers = 1.
 			self assert: (customerBook includesCustomerNamed: johnLennon) ]
 ! !
+
+!CustomerBookTest methodsFor: 'testing' stamp: 'NC 5/1/2022 23:50:31'!
+tiempoQueTardaEn: aBlockOfCode
+		
+		| millisecondsBeforeRunning millisecondsAfterRunning |
+		
+		millisecondsBeforeRunning := Time millisecondClockValue * millisecond.
+		aBlockOfCode value.
+		millisecondsAfterRunning := Time millisecondClockValue * millisecond.
+		
+		^millisecondsAfterRunning - millisecondsBeforeRunning.! !
 
 
 !classDefinition: #CustomerBook category: 'CodigoRepetido-Ejercicio'!
