@@ -429,19 +429,11 @@ Numero subclass: #Entero
 	
 	^ aDivisor divideAnEntero: self! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'NC 5/8/2022 23:07:31'!
 fibonacci
-
-	| one two |
 	
-	one := Entero with: 1.
-	two := Entero with: 2.
-	
-	self isNegative ifTrue: [self error: Entero negativeFibonacciErrorDescription ].	
-	(self isZero or: [self isOne]) ifTrue: [^one].
-	
-	^ (self - one) fibonacci + (self - two) fibonacci
-		! !
+	self subclassResponsibility.
+	! !
 
 
 !Entero methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 21:01'!
@@ -475,20 +467,20 @@ printOn: aStream
 	aStream print: value ! !
 
 
-!Entero methodsFor: 'testing' stamp: 'NR 9/23/2018 22:17:55'!
+!Entero methodsFor: 'testing' stamp: 'NC 5/8/2022 23:17:46'!
 isNegative
 	
-	^value < 0! !
+	self subclassResponsibility .! !
 
-!Entero methodsFor: 'testing' stamp: 'HernanWilkinson 5/7/2016 20:14'!
+!Entero methodsFor: 'testing' stamp: 'NC 5/8/2022 23:16:45'!
 isOne
 	
-	^value = 1! !
+	self subclassResponsibility .! !
 
-!Entero methodsFor: 'testing' stamp: 'HernanWilkinson 5/7/2016 20:12'!
+!Entero methodsFor: 'testing' stamp: 'NC 5/8/2022 23:13:10'!
 isZero
 	
-	^value = 0! !
+	self subclassResponsibility.! !
 
 
 !Entero methodsFor: 'arithmetic operations - private' stamp: 'HernanWilkinson 5/7/2016 21:55'!
@@ -550,13 +542,143 @@ Entero class
 negativeFibonacciErrorDescription
 	^ ' Fibonacci no está definido aquí para Enteros Negativos'! !
 
-!Entero class methodsFor: 'instance creation' stamp: 'JS 5/5/2022 03:55:37'!
+!Entero class methodsFor: 'instance creation' stamp: 'NC 5/8/2022 23:23:44'!
 with: aValue 
 	
 	"Esta verificacion esta puesta por si se equivocan y quieren crear un Entero pasando otra cosa que un Integer - Hernan"
-	aValue isInteger ifFalse: [  self error: 'aValue debe ser anInteger' ].
+	aValue isInteger ifFalse: [ self error: 'aValue debe ser anInteger' ].
 	
-	^self new initializeWith: aValue! !
+	"Para eliminar los ifTrue del mensaje de fibonacci, convertimos la clase Entero en una clase 
+	abstracta y creamos las subclases EnteroCero, EnteroNegativo, EnteroPositivo y EnteroUno.
+	 Entendemos que esto conceptualmente está mal, ya que estos entes deberían ser instancias de la clase entero y no subclases 
+	en sí mismas, pero fue la única forma de eliminar los ifTrue de fibonacci que encontramos.
+	 Como consecuencia de esto, tuvimos que usar If Statements en esta parte para instanciar correctamente los enteros que se crean en el setUp de las pruebas."
+	aValue = 0 ifTrue: [^EnteroCero new initializeWith: aValue].
+	aValue = 1 ifTrue: [^EnteroUno new initializeWith: aValue].
+	aValue < 0 ifTrue: [^EnteroNegativo new initializeWith: aValue].
+	
+	^EnteroPositivo new initializeWith: aValue.! !
+
+
+!classDefinition: #EnteroCero category: 'Numeros-Parte2-Ejercicio'!
+Entero subclass: #EnteroCero
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numeros-Parte2-Ejercicio'!
+
+!EnteroCero methodsFor: 'testing' stamp: 'NC 5/8/2022 23:17:57'!
+isNegative
+	
+	^false.! !
+
+!EnteroCero methodsFor: 'testing' stamp: 'NC 5/8/2022 23:16:53'!
+isOne
+	
+	^false.! !
+
+!EnteroCero methodsFor: 'testing' stamp: 'NC 5/8/2022 23:13:45'!
+isZero
+	
+	^true.! !
+
+
+!EnteroCero methodsFor: 'arithmetic operations' stamp: 'NC 5/8/2022 23:07:42'!
+fibonacci
+	
+	^Entero with: 1.! !
+
+
+!classDefinition: #EnteroNegativo category: 'Numeros-Parte2-Ejercicio'!
+Entero subclass: #EnteroNegativo
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numeros-Parte2-Ejercicio'!
+
+!EnteroNegativo methodsFor: 'testing' stamp: 'NC 5/8/2022 23:18:04'!
+isNegative
+	
+	^true.! !
+
+!EnteroNegativo methodsFor: 'testing' stamp: 'NC 5/8/2022 23:17:15'!
+isOne
+	
+	^false.! !
+
+!EnteroNegativo methodsFor: 'testing' stamp: 'NC 5/8/2022 23:13:54'!
+isZero
+	
+	^false.! !
+
+
+!EnteroNegativo methodsFor: 'arithmetic operations' stamp: 'NC 5/8/2022 23:07:42'!
+fibonacci
+
+	^self error: Entero negativeFibonacciErrorDescription! !
+
+
+!classDefinition: #EnteroPositivo category: 'Numeros-Parte2-Ejercicio'!
+Entero subclass: #EnteroPositivo
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numeros-Parte2-Ejercicio'!
+
+!EnteroPositivo methodsFor: 'testing' stamp: 'NC 5/8/2022 23:18:12'!
+isNegative
+	
+	^false.! !
+
+!EnteroPositivo methodsFor: 'testing' stamp: 'NC 5/8/2022 23:17:21'!
+isOne
+	
+	^false.! !
+
+!EnteroPositivo methodsFor: 'testing' stamp: 'NC 5/8/2022 23:13:58'!
+isZero
+	
+	^false.! !
+
+
+!EnteroPositivo methodsFor: 'arithmetic operations' stamp: 'NC 5/8/2022 23:07:42'!
+fibonacci
+	
+	| one two |
+	
+	one := Entero with: 1.
+	two := Entero with: 2.
+	
+	^ (self - one) fibonacci + (self - two) fibonacci.! !
+
+
+!classDefinition: #EnteroUno category: 'Numeros-Parte2-Ejercicio'!
+Entero subclass: #EnteroUno
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numeros-Parte2-Ejercicio'!
+
+!EnteroUno methodsFor: 'testing' stamp: 'NC 5/8/2022 23:18:17'!
+isNegative
+	
+	^false.! !
+
+!EnteroUno methodsFor: 'testing' stamp: 'NC 5/8/2022 23:17:27'!
+isOne
+	
+	^true.! !
+
+!EnteroUno methodsFor: 'testing' stamp: 'NC 5/8/2022 23:14:01'!
+isZero
+	
+	^false.! !
+
+
+!EnteroUno methodsFor: 'arithmetic operations' stamp: 'NC 5/8/2022 23:07:42'!
+fibonacci
+
+	^Entero with: 1.! !
 
 
 !classDefinition: #Fraccion category: 'Numeros-Parte2-Ejercicio'!
