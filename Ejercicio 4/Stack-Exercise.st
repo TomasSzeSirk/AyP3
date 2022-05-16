@@ -255,9 +255,9 @@ createSentenceFInderByPrefix
 	sentenceFinderByPrefixes := SentenceFinderByPrefix new.
 	sentenceFinderByPrefixes initializeWith: stack .! !
 
-!SentenceFinderByPrefixTest methodsFor: 'private' stamp: 'TSS 5/16/2022 14:17:30'!
+!SentenceFinderByPrefixTest methodsFor: 'private' stamp: 'TSS 5/16/2022 19:12:51'!
 createStack
-	stack := OOStack new.
+	stack := OOStackLimitless new.
 	stack push: 'Boca'.
 	stack push: 'San Lorenzo'.
 	stack push: 'Racing'.! !
