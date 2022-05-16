@@ -5,55 +5,54 @@ TestCase subclass: #OOStackTest
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStackTest methodsFor: 'test' stamp: 'TSS 5/16/2022 16:17:48'!
+!OOStackTest methodsFor: 'test' stamp: 'TSS 5/16/2022 17:05:34'!
 test01StackShouldBeEmptyWhenCreated
 
 
 	| stack |
 	
 	
-	stack := OOStack new.
+	stack := OOStackLimitless new.
 	
 	self assert: stack isEmpty! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:29:55'!
+!OOStackTest methodsFor: 'test' stamp: 'TSS 5/16/2022 17:05:27'!
 test02PushAddElementsToTheStack
 
 	| stack |
 	
-	stack := OOStack new.
+	stack := OOStackLimitless new.
 	stack push: 'something'.
 	
 	self deny: stack isEmpty! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:01'!
+!OOStackTest methodsFor: 'test' stamp: 'TSS 5/16/2022 17:04:07'!
 test03PopRemovesElementsFromTheStack
 
 	| stack |
 	
-	stack := OOStack new.
+	stack := OOStackLimitless new.
 	stack push: 'something'.
 	stack pop.
-	
 	self assert: stack isEmpty! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:09'!
+!OOStackTest methodsFor: 'test' stamp: 'TSS 5/16/2022 17:05:40'!
 test04PopReturnsLastPushedObject
 
 	| stack pushedObject |
 	
-	stack := OOStack new.
+	stack := OOStackLimitless new.
 	pushedObject := 'something'.
 	stack push: pushedObject.
 	
 	self assert: stack pop = pushedObject! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:48'!
+!OOStackTest methodsFor: 'test' stamp: 'TSS 5/16/2022 17:05:45'!
 test05StackBehavesLIFO
 
 	| stack firstPushedObject secondPushedObject |
 	
-	stack := OOStack new.
+	stack := OOStackLimitless new.
 	firstPushedObject := 'first'.
 	secondPushedObject := 'second'.
 	
@@ -65,12 +64,12 @@ test05StackBehavesLIFO
 	self assert: stack isEmpty 
 	! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:20'!
+!OOStackTest methodsFor: 'test' stamp: 'TSS 5/16/2022 17:05:51'!
 test06TopReturnsLastPushedObject
 
 	| stack pushedObject |
 	
-	stack := OOStack new.
+	stack := OOStackLimitless new.
 	pushedObject := 'something'.
 	
 	stack push: pushedObject.
@@ -78,12 +77,12 @@ test06TopReturnsLastPushedObject
 	self assert: stack top = pushedObject.
 	! !
 
-!OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:24'!
+!OOStackTest methodsFor: 'test' stamp: 'TSS 5/16/2022 17:06:23'!
 test07TopDoesNotRemoveObjectFromStack
 
 	| stack pushedObject |
 	
-	stack := OOStack new.
+	stack := OOStackLimitless new.
 	pushedObject := 'something'.
 	
 	stack push: pushedObject.
@@ -93,45 +92,63 @@ test07TopDoesNotRemoveObjectFromStack
 	self assert: stack size = 1.
 	! !
 
-!OOStackTest methodsFor: 'test' stamp: 'HAW 4/14/2017 22:48:26'!
+!OOStackTest methodsFor: 'test' stamp: 'TSS 5/16/2022 17:07:03'!
 test08CanNotPopWhenThereAreNoObjectsInTheStack
 
 	| stack  |
 	
-	stack := OOStack new.
+	stack := OOStackLimitless new.
 	self
 		should: [ stack pop ]
 		raise: Error - MessageNotUnderstood 
 		withExceptionDo: [ :anError |
-			self assert: anError messageText = OOStack stackEmptyErrorDescription ]
+			self assert: anError messageText = OOStackLimitless stackEmptyErrorDescription ]
 		
 ! !
 
-!OOStackTest methodsFor: 'test' stamp: 'TSS 5/13/2022 23:30:28'!
+!OOStackTest methodsFor: 'test' stamp: 'TSS 5/16/2022 17:06:46'!
 test09CanNotPopWhenThereAreNoObjectsInTheStackAndTheStackHadObjects
 	| stack  |
 	
-	stack := OOStack new.
+	stack := OOStackLimitless new.
 	stack push: 'something'.
 	stack pop.
 	
 	self should: [ stack pop ]
 	raise: Error - MessageNotUnderstood
 	withExceptionDo: [ :anError |
-		self assert: anError messageText = OOStack stackEmptyErrorDescription ]! !
+		self assert: anError messageText = OOStackLimitless stackEmptyErrorDescription ]! !
 
-!OOStackTest methodsFor: 'test' stamp: 'HAW 4/14/2017 22:48:44'!
+!OOStackTest methodsFor: 'test' stamp: 'TSS 5/16/2022 17:06:56'!
 test10CanNotTopWhenThereAreNoObjectsInTheStack
 
 	| stack  |
 	
-	stack := OOStack new.
+	stack := OOStackLimitless new.
 	self
 		should: [ stack top ]
 		raise: Error - MessageNotUnderstood 
 		withExceptionDo: [ :anError |
-			self assert: anError messageText = OOStack stackEmptyErrorDescription ]
+			self assert: anError messageText = OOStackLimitless stackEmptyErrorDescription ]
 		
+! !
+
+!OOStackTest methodsFor: 'test' stamp: 'TSS 5/16/2022 17:51:46'!
+test11CanNotPushWhenTheStackIsStack
+
+
+	| stack |
+	
+	
+	stack := OOStackWithLimit withLimit: 1.
+	stack push: 'something'.
+	
+	self should: [ stack push: 'something else']
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = OOStackLimitless stackFullErrorDescription ]
+	
+	
 ! !
 
 
@@ -259,6 +276,10 @@ Object subclass: #OOEstado
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
+!OOEstado methodsFor: 'verifier' stamp: 'TSS 5/16/2022 17:21:50'!
+anPushSuccesfully: aStack with: aString
+	self subclassResponsibility ! !
+
 !OOEstado methodsFor: 'verifier' stamp: 'TSS 5/16/2022 15:19:57'!
 canPopSuccesfully: aStack
 	self subclassResponsibility.! !
@@ -274,44 +295,69 @@ canTopSuccesfully: aStack
 OOEstado class
 	instanceVariableNames: ''!
 
-!OOEstado class methodsFor: 'as yet unclassified' stamp: 'TSS 5/12/2022 20:11:13'!
+!OOEstado class methodsFor: 'create initialization' stamp: 'TSS 5/16/2022 17:11:42'!
 withStack: aStack
-	^(self subclasses detect: [:subclass| subclass detectIfItIsEmpty: aStack ]) new.! !
+	^(self subclasses detect: [:subclass| subclass detectIfItIsTheCorrectState: aStack ]) new.! !
 
 
-!classDefinition: #OONoVacio category: 'Stack-Exercise'!
-OOEstado subclass: #OONoVacio
+!classDefinition: #OOLleno category: 'Stack-Exercise'!
+OOEstado subclass: #OOLleno
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OONoVacio methodsFor: 'verifier' stamp: 'TSS 5/12/2022 19:45:17'!
+!OOLleno methodsFor: 'verifier' stamp: 'TSS 5/16/2022 17:08:14'!
 canPopSuccesfully: aStack
 	^aStack canPop.	! !
 
-!OONoVacio methodsFor: 'verifier' stamp: 'TSS 5/16/2022 16:00:50'!
+!OOLleno methodsFor: 'verifier' stamp: 'TSS 5/16/2022 17:53:08'!
 canPushSuccesfully: aStack with: aString
-	self subclassResponsibility ! !
+	aStack cantRealizeAddingOperation .! !
 
-!OONoVacio methodsFor: 'verifier' stamp: 'TSS 5/12/2022 19:45:10'!
+!OOLleno methodsFor: 'verifier' stamp: 'TSS 5/16/2022 17:08:29'!
 canTopSuccesfully: aStack
 	^aStack canTop.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'OONoVacio class' category: 'Stack-Exercise'!
-OONoVacio class
+!classDefinition: 'OOLleno class' category: 'Stack-Exercise'!
+OOLleno class
 	instanceVariableNames: ''!
 
-!OONoVacio class methodsFor: 'as yet unclassified' stamp: 'TSS 5/12/2022 20:11:12'!
-detectIfItIsEmpty: aStack
-	^aStack isEmpty not.! !
+!OOLleno class methodsFor: 'detect' stamp: 'TSS 5/16/2022 17:14:40'!
+detectIfItIsTheCorrectState: aStack
+	^aStack isFull.! !
 
-!OONoVacio class methodsFor: 'as yet unclassified' stamp: 'TSS 5/16/2022 15:26:43'!
-detectIfItIsFull: aStackWithLimit
-	
-	self subclassResponsibility.! !
+
+!classDefinition: #OONiVacioNiLleno category: 'Stack-Exercise'!
+OOEstado subclass: #OONiVacioNiLleno
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!OONiVacioNiLleno methodsFor: 'verifier' stamp: 'TSS 5/12/2022 19:45:17'!
+canPopSuccesfully: aStack
+	^aStack canPop.	! !
+
+!OONiVacioNiLleno methodsFor: 'verifier' stamp: 'TSS 5/16/2022 17:22:33'!
+canPushSuccesfully: aStack with: aString
+	aStack canPush: aString! !
+
+!OONiVacioNiLleno methodsFor: 'verifier' stamp: 'TSS 5/12/2022 19:45:10'!
+canTopSuccesfully: aStack
+	^aStack canTop.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'OONiVacioNiLleno class' category: 'Stack-Exercise'!
+OONiVacioNiLleno class
+	instanceVariableNames: ''!
+
+!OONiVacioNiLleno class methodsFor: 'detect' stamp: 'TSS 5/16/2022 17:13:17'!
+detectIfItIsTheCorrectState: aStack
+	^aStack isEmpty not and: [aStack isFull not].! !
 
 
 !classDefinition: #OOVacio category: 'Stack-Exercise'!
@@ -321,13 +367,17 @@ OOEstado subclass: #OOVacio
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOVacio methodsFor: 'verifier' stamp: 'TSS 5/13/2022 22:38:56'!
+!OOVacio methodsFor: 'verifier' stamp: 'TSS 5/16/2022 17:56:57'!
 canPopSuccesfully: aStack
-	^aStack cantRealizeOperation.! !
+	^aStack cantRealizeEliminationOperation.! !
 
-!OOVacio methodsFor: 'verifier' stamp: 'TSS 5/13/2022 22:38:56'!
+!OOVacio methodsFor: 'verifier' stamp: 'TSS 5/16/2022 17:23:27'!
+canPushSuccesfully: aStack with: aString
+	aStack canPush: aString ! !
+
+!OOVacio methodsFor: 'verifier' stamp: 'TSS 5/16/2022 17:56:58'!
 canTopSuccesfully: aStack
-	^aStack cantRealizeOperation.! !
+	^aStack cantRealizeEliminationOperation.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -335,8 +385,8 @@ canTopSuccesfully: aStack
 OOVacio class
 	instanceVariableNames: ''!
 
-!OOVacio class methodsFor: 'as yet unclassified' stamp: 'TSS 5/12/2022 20:11:13'!
-detectIfItIsEmpty: aStack
+!OOVacio class methodsFor: 'detect' stamp: 'TSS 5/16/2022 17:12:23'!
+detectIfItIsTheCorrectState: aStack
 	^aStack isEmpty.! !
 
 
@@ -351,8 +401,18 @@ Object subclass: #OOStack
 isEmpty
 	^contents size = 0.! !
 
+!OOStack methodsFor: 'testing' stamp: 'TSS 5/16/2022 17:54:14'!
+isFull
+	self subclassResponsibility.! !
 
-!OOStack methodsFor: 'private' stamp: 'TSS 5/13/2022 22:37:48'!
+
+!OOStack methodsFor: 'initialization' stamp: 'TSS 5/16/2022 16:11:58'!
+initialize
+	contents := OrderedCollection new.
+	stackState := OOVacio new.! !
+
+
+!OOStack methodsFor: 'basic operations' stamp: 'TSS 5/13/2022 22:37:48'!
 canPop
 	| lastElement |
 	
@@ -362,32 +422,23 @@ canPop
 	
 	^lastElement ! !
 
-!OOStack methodsFor: 'private' stamp: 'TSS 5/13/2022 22:37:48'!
+!OOStack methodsFor: 'basic operations' stamp: 'TSS 5/13/2022 22:37:48'!
 canTop
 	^contents last.! !
 
-!OOStack methodsFor: 'private' stamp: 'TSS 5/13/2022 22:38:56'!
-cantRealizeOperation
+!OOStack methodsFor: 'basic operations' stamp: 'TSS 5/16/2022 17:57:33'!
+cantRealizeEliminationOperation
 	self error: OOStack stackEmptyErrorDescription.! !
-
-
-!OOStack methodsFor: 'initialization' stamp: 'TSS 5/16/2022 16:11:58'!
-initialize
-	contents := OrderedCollection new.
-	stackState := OOVacio new.! !
-
 
 !OOStack methodsFor: 'basic operations' stamp: 'TSS 5/12/2022 19:41:19'!
 pop
 	^stackState canPopSuccesfully: self.
 	! !
 
-!OOStack methodsFor: 'basic operations' stamp: 'TSS 5/16/2022 16:27:16'!
+!OOStack methodsFor: 'basic operations' stamp: 'TSS 5/16/2022 17:02:39'!
 push: aString
 
-	contents addLast: aString.
-	
-	stackState := OOEstado withStack: self.
+	self subclassResponsibility.
 	! !
 
 !OOStack methodsFor: 'basic operations' stamp: 'TSS 5/13/2022 22:37:48'!
@@ -413,6 +464,71 @@ stackFullErrorDescription
 	^ 'Stack is full'! !
 
 
+!classDefinition: #OOStackLimitless category: 'Stack-Exercise'!
+OOStack subclass: #OOStackLimitless
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!OOStackLimitless methodsFor: 'basic operations' stamp: 'TSS 5/16/2022 17:02:57'!
+push: aString
+	
+	contents addLast: aString.
+	
+	stackState := OOEstado withStack: self.! !
+
+
+!OOStackLimitless methodsFor: 'testing' stamp: 'TSS 5/16/2022 17:55:16'!
+isFull
+	^false! !
+
+
+!classDefinition: #OOStackWithLimit category: 'Stack-Exercise'!
+OOStack subclass: #OOStackWithLimit
+	instanceVariableNames: 'limit'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!OOStackWithLimit methodsFor: 'initialization' stamp: 'TSS 5/16/2022 17:38:37'!
+initializeWith: anInteger
+	limit := 	anInteger! !
+
+
+!OOStackWithLimit methodsFor: 'testing' stamp: 'TSS 5/16/2022 17:30:56'!
+isFull
+	^self size = limit! !
+
+
+!OOStackWithLimit methodsFor: 'basic operations' stamp: 'TSS 5/16/2022 17:31:22'!
+canPush: aString
+	contents addLast: aString.
+	
+	stackState := OOEstado withStack: self.! !
+
+!OOStackWithLimit methodsFor: 'basic operations' stamp: 'TSS 5/16/2022 17:53:08'!
+cantRealizeAddingOperation
+	self error: OOStack stackFullErrorDescription.! !
+
+!OOStackWithLimit methodsFor: 'basic operations' stamp: 'TSS 5/16/2022 17:36:15'!
+push: aString
+
+	stackState canPushSuccesfully: self with: aString 
+	
+	! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'OOStackWithLimit class' category: 'Stack-Exercise'!
+OOStackWithLimit class
+	instanceVariableNames: ''!
+
+!OOStackWithLimit class methodsFor: 'create initialization' stamp: 'TSS 5/16/2022 17:37:50'!
+withLimit: anInteger
+	^self new initializeWith: anInteger.! !
+
+
 !classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
 Object subclass: #SentenceFinderByPrefix
 	instanceVariableNames: 'stack auxiliarStack answers'
@@ -420,11 +536,14 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefix methodsFor: 'initialiazation' stamp: 'TSS 5/14/2022 22:52:37'!
-initializeWith: aStack
-	stack := aStack.
-	auxiliarStack := OOStack new.
+!SentenceFinderByPrefix methodsFor: 'initialiazation' stamp: 'TSS 5/16/2022 17:43:48'!
+initialize
+	auxiliarStack := OOStackLimitless new.
 	answers := OrderedCollection new.! !
+
+!SentenceFinderByPrefix methodsFor: 'initialiazation' stamp: 'TSS 5/16/2022 17:43:55'!
+initializeWith: aLimitlessStack
+	stack := aLimitlessStack.! !
 
 
 !SentenceFinderByPrefix methodsFor: 'private' stamp: 'TSS 5/14/2022 23:22:28'!
@@ -453,12 +572,12 @@ verify: aPrefix
 	(aPrefix includes: $ ) ifTrue: [self error: SentenceFinderByPrefix prefixHasBlankSpaceErrorDescription ].! !
 
 
-!SentenceFinderByPrefix methodsFor: 'getter' stamp: 'TSS 5/14/2022 22:44:52'!
+!SentenceFinderByPrefix methodsFor: 'getter' stamp: 'TSS 5/16/2022 17:18:56'!
 returnStack
 	^stack ! !
 
 
-!SentenceFinderByPrefix methodsFor: 'filtering' stamp: 'TSS 5/14/2022 23:32:42'!
+!SentenceFinderByPrefix methodsFor: 'filtering' stamp: 'TSS 5/16/2022 17:19:09'!
 find: aPrefix
 	
 	self verify: aPrefix.
@@ -486,3 +605,8 @@ prefixEmptyErrorDescription
 prefixHasBlankSpaceErrorDescription
 
 	^'El prefijo tiene un espacio vacio'! !
+
+
+!SentenceFinderByPrefix class methodsFor: 'create initialization' stamp: 'TSS 5/16/2022 17:46:49'!
+withAStack: aLimitlessStack
+	^self new initializeWith: aLimitlessStack.! !
