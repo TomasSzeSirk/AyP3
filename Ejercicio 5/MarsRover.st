@@ -1,101 +1,78 @@
 !classDefinition: #MarsRoverTest category: 'MarsRover'!
 TestCase subclass: #MarsRoverTest
-	instanceVariableNames: ''
+	instanceVariableNames: 'aMarsRover'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 5/31/2022 17:07:28'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 6/1/2022 20:18:57'!
 test01MarsRoverStartsAtOrigin
-	|marsRover|
-	marsRover := MarsRover new.
-	self assert: (marsRover position = (0@0))! !
+	self assert: (aMarsRover position = (0@0))! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 5/31/2022 17:07:52'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 6/1/2022 20:16:34'!
 test02MarsRoverCanMoveForward
 	
-	|marsRover|
-	marsRover := MarsRover new.
-	marsRover sendComands: 'f'.
-	self assert: (marsRover position = (0@1))! !
+	self sendCommandToMarsRover: 'f' andAssert: [aMarsRover position = (0@1)].! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 5/31/2022 17:08:12'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 6/1/2022 20:16:34'!
 test03MarsRoverCanMoveBackwards
+	
+	self sendCommandToMarsRover: 'b' andAssert: [aMarsRover position = (0@-1)].! !
 
-	|marsRover|
-	marsRover := MarsRover new.
-	marsRover sendComands: 'b'.
-	self assert: (marsRover position = (0@-1))! !
-
-!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 5/31/2022 17:10:11'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 6/1/2022 20:16:34'!
 test04MarsRoverCanMoveBackwardsAndForward
-	|marsRover|
-	marsRover := MarsRover new.
-	marsRover sendComands: 'fbf'.
-	self assert: (marsRover position = (0@1))! !
+	
+	self sendCommandToMarsRover: 'fbf' andAssert: [aMarsRover position = (0@1)].! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 5/31/2022 17:38:31'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 6/1/2022 20:18:49'!
 test05MarsRoverStartsPointingNorth
-	|aMarsRover|
-	aMarsRover := MarsRover new.
 	self assert: (aMarsRover directionSymbol = #North)! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 5/31/2022 17:38:26'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 6/1/2022 20:16:34'!
 test06MarsRoverCanTurnLeft
-	|aMarsRover|
-	aMarsRover := MarsRover new.
-	aMarsRover sendComands: 'l'.
-	self assert: (aMarsRover directionSymbol = #West)! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 5/31/2022 17:38:21'!
+	self sendCommandToMarsRover: 'l' andAssert: [aMarsRover directionSymbol = #West].! !
+
+!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 6/1/2022 20:16:34'!
 test07MarsRoverCanTurnRight
-	|aMarsRover|
-	aMarsRover := MarsRover new.
-	aMarsRover sendComands: 'r'.
-	self assert: (aMarsRover directionSymbol = #East)
+	
+	self sendCommandToMarsRover: 'r' andAssert: [aMarsRover directionSymbol = #East].
 	! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 5/31/2022 17:38:13'!
+!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 6/1/2022 20:16:34'!
 test08MarsRoverCanChangeDirectionMoreThanOnce
-	|aMarsRover|
-	aMarsRover := MarsRover new.
-	aMarsRover sendComands: 'lr'.
-	self assert: (aMarsRover directionSymbol = #North)! !
-
-!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 5/31/2022 17:40:13'!
-test09MarsRoverCanMoveForwardInADifferentDirection
-	|aMarsRover|
-	aMarsRover := MarsRover new.
-	aMarsRover sendComands: 'lf'.
-	self assert: (aMarsRover position = (-1@0))! !
-
-!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 5/31/2022 17:40:43'!
-test10MarsRoverCanMoveBackwardsInADifferentDirection
-	|aMarsRover|
-	aMarsRover := MarsRover new.
-	aMarsRover sendComands: 'lb'.
-	self assert: (aMarsRover position = (1@0))! !
-
-!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 5/31/2022 17:41:38'!
-test11MarsRoverSendsErrorMessageWhenInexistentCommandIsSent
-	|aMarsRover|
-	aMarsRover := MarsRover new.
 	
-	self should: [ aMarsRover sendComands: 'x'.]
-		raise: Error - MessageNotUnderstood 
-		withExceptionDo: [ :anError |
-			self assert: anError messageText =MarsRover inexistentCommandErrorDescription]! !
+	self sendCommandToMarsRover: 'lr' andAssert: [aMarsRover directionSymbol = #North].! !
 
-!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 5/31/2022 17:42:23'!
-test12MarsRoverCutTheCommandChainWhenInexistentCommandSent
-	|aMarsRover|
-	aMarsRover := MarsRover new.
+!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 6/1/2022 20:16:34'!
+test09MarsRoverCanMoveForwardInADifferentDirection
+
+	self sendCommandToMarsRover: 'lf' andAssert: [aMarsRover position = (-1@0)].! !
+
+!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 6/1/2022 20:16:34'!
+test10MarsRoverCanMoveBackwardsInADifferentDirection
+	
+	self sendCommandToMarsRover: 'lb' andAssert: [aMarsRover position = (1@0)].! !
+
+!MarsRoverTest methodsFor: 'tests' stamp: 'TSS 6/1/2022 21:07:03'!
+test11MarsRoverCutTheCommandChainWhenInexistentCommandSent
 	
 	self should: [ aMarsRover sendComands: 'fxf'.]
 		raise: Error - MessageNotUnderstood 
 		withExceptionDo: [ :anError |
 			self assert: anError messageText =MarsRover inexistentCommandErrorDescription.
 			self assert: aMarsRover position = (0@1)]! !
+
+
+!MarsRoverTest methodsFor: 'private' stamp: 'TSS 6/1/2022 20:16:34'!
+sendCommandToMarsRover: aChainOfCommands andAssert: aBlock
+	aMarsRover sendComands: aChainOfCommands .
+	self assert: aBlock ! !
+
+
+!MarsRoverTest methodsFor: 'setup' stamp: 'TSS 6/1/2022 20:17:31'!
+setUp
+	aMarsRover := MarsRover new.! !
 
 
 !classDefinition: #MarsRover category: 'MarsRover'!
@@ -112,55 +89,25 @@ sendComands: aLineOfCommands
 ! !
 
 
-!MarsRover methodsFor: 'movement' stamp: 'a 5/27/2022 20:06:16'!
-moveEast
+!MarsRover methodsFor: 'movement' stamp: 'TSS 6/1/2022 19:18:45'!
+moveInDirectionOf: aVector
 
-	^ position := position + (1@0)! !
-
-!MarsRover methodsFor: 'movement' stamp: 'a 5/27/2022 19:56:45'!
-moveNorth
-
-	^ position := position + (0@1)! !
-
-!MarsRover methodsFor: 'movement' stamp: 'a 5/27/2022 19:57:05'!
-moveSouth
-
-	^ position := position + (0@-1)! !
-
-!MarsRover methodsFor: 'movement' stamp: 'a 5/27/2022 20:06:12'!
-moveWest
-
-	^ position := position + (-1@0)! !
+	^ position := position + aVector ! !
 
 
-!MarsRover methodsFor: 'rotation' stamp: 'a 5/27/2022 19:57:23'!
-faceEast
+!MarsRover methodsFor: 'rotation' stamp: 'TSS 6/1/2022 19:25:20'!
+faceToDirection: aDirection
 
-	^ direction := East new! !
-
-!MarsRover methodsFor: 'rotation' stamp: 'a 5/27/2022 20:06:30'!
-faceNorth
-
-	^ direction := North new! !
-
-!MarsRover methodsFor: 'rotation' stamp: 'a 5/27/2022 20:06:25'!
-faceSouth
-
-	^ direction := South new! !
-
-!MarsRover methodsFor: 'rotation' stamp: 'a 5/27/2022 20:05:36'!
-faceWest
-
-	^ direction := West new! !
+	^ direction := aDirection ! !
 
 
 !MarsRover methodsFor: 'getter' stamp: 'TSS 5/31/2022 16:56:13'!
 direction
 	^direction! !
 
-!MarsRover methodsFor: 'getter' stamp: 'TSS 5/31/2022 17:37:58'!
+!MarsRover methodsFor: 'getter' stamp: 'TSS 6/1/2022 21:07:42'!
 directionSymbol
-	^(direction asSymbol)! !
+	^direction asSymbol! !
 
 !MarsRover methodsFor: 'getter' stamp: 'TSS 5/27/2022 18:22:11'!
 position
@@ -233,22 +180,22 @@ MarsRoverDirection subclass: #East
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!East methodsFor: 'rotation' stamp: 'TSS 5/31/2022 17:04:02'!
+!East methodsFor: 'rotation' stamp: 'TSS 6/1/2022 19:25:49'!
 turnLeft: aMarsRover
-	aMarsRover faceNorth.! !
+	aMarsRover faceToDirection: North new.! !
 
-!East methodsFor: 'rotation' stamp: 'TSS 5/31/2022 17:05:53'!
+!East methodsFor: 'rotation' stamp: 'TSS 6/1/2022 19:26:10'!
 turnRight: aMarsRover
-	aMarsRover faceSouth! !
+	aMarsRover faceToDirection: South new.! !
 
 
-!East methodsFor: 'movement' stamp: 'TSS 5/31/2022 17:23:57'!
+!East methodsFor: 'movement' stamp: 'TSS 6/1/2022 19:21:46'!
 moveBackwards: aMarsRover
-	aMarsRover moveWest ! !
+	aMarsRover moveInDirectionOf: (-1@0)! !
 
-!East methodsFor: 'movement' stamp: 'TSS 5/31/2022 17:14:51'!
+!East methodsFor: 'movement' stamp: 'TSS 6/1/2022 19:22:01'!
 moveForward: aMarsRover
-	aMarsRover moveEast.! !
+	aMarsRover moveInDirectionOf: (1@0)! !
 
 
 !East methodsFor: 'getter' stamp: 'a 5/27/2022 19:50:31'!
@@ -263,22 +210,22 @@ MarsRoverDirection subclass: #North
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!North methodsFor: 'rotation' stamp: 'TSS 5/31/2022 17:03:52'!
+!North methodsFor: 'rotation' stamp: 'TSS 6/1/2022 19:26:35'!
 turnLeft: aMarsRover
-	aMarsRover faceWest ! !
+	aMarsRover faceToDirection: West new.! !
 
-!North methodsFor: 'rotation' stamp: 'TSS 5/31/2022 17:06:14'!
+!North methodsFor: 'rotation' stamp: 'TSS 6/1/2022 19:26:26'!
 turnRight: aMarsRover
-	aMarsRover faceEast ! !
+	aMarsRover faceToDirection: East new.! !
 
 
-!North methodsFor: 'movement' stamp: 'TSS 5/31/2022 17:24:13'!
+!North methodsFor: 'movement' stamp: 'TSS 6/1/2022 19:22:16'!
 moveBackwards: aMarsRover
-	aMarsRover moveSouth ! !
+	aMarsRover moveInDirectionOf: (0@-1)! !
 
-!North methodsFor: 'movement' stamp: 'TSS 5/31/2022 17:15:26'!
+!North methodsFor: 'movement' stamp: 'TSS 6/1/2022 19:22:24'!
 moveForward: aMarsRover
-	aMarsRover moveNorth ! !
+	aMarsRover moveInDirectionOf: (0@1)! !
 
 
 !North methodsFor: 'getter' stamp: 'a 5/27/2022 19:50:28'!
@@ -305,22 +252,22 @@ MarsRoverDirection subclass: #South
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!South methodsFor: 'rotation' stamp: 'TSS 5/31/2022 17:04:18'!
+!South methodsFor: 'rotation' stamp: 'TSS 6/1/2022 19:26:44'!
 turnLeft: aMarsRover
-	aMarsRover faceEast ! !
+	aMarsRover faceToDirection: East new.! !
 
-!South methodsFor: 'rotation' stamp: 'TSS 5/31/2022 17:06:29'!
+!South methodsFor: 'rotation' stamp: 'TSS 6/1/2022 19:26:54'!
 turnRight: aMarsRover
-	aMarsRover faceWest ! !
+	aMarsRover faceToDirection: West new.! !
 
 
-!South methodsFor: 'movement' stamp: 'TSS 5/31/2022 17:24:34'!
+!South methodsFor: 'movement' stamp: 'TSS 6/1/2022 19:22:34'!
 moveBackwards: aMarsRover
-	aMarsRover moveNorth ! !
+	aMarsRover moveInDirectionOf: (0@1)! !
 
-!South methodsFor: 'movement' stamp: 'TSS 5/31/2022 17:18:09'!
+!South methodsFor: 'movement' stamp: 'TSS 6/1/2022 19:22:48'!
 moveForward: aMarsRover
-	aMarsRover moveSouth ! !
+	aMarsRover moveInDirectionOf: (0@-1)! !
 
 
 !South methodsFor: 'getter' stamp: 'a 5/27/2022 19:50:23'!
@@ -335,22 +282,22 @@ MarsRoverDirection subclass: #West
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!West methodsFor: 'rotation' stamp: 'TSS 5/31/2022 17:05:10'!
+!West methodsFor: 'rotation' stamp: 'TSS 6/1/2022 19:27:03'!
 turnLeft: aMarsRover
-	aMarsRover faceSouth ! !
+	aMarsRover faceToDirection: South new.! !
 
-!West methodsFor: 'rotation' stamp: 'TSS 5/31/2022 17:06:50'!
+!West methodsFor: 'rotation' stamp: 'TSS 6/1/2022 19:27:07'!
 turnRight: aMarsRover
-	aMarsRover faceNorth ! !
+	aMarsRover faceToDirection: North new.! !
 
 
-!West methodsFor: 'movement' stamp: 'TSS 5/31/2022 17:24:48'!
+!West methodsFor: 'movement' stamp: 'TSS 6/1/2022 19:23:00'!
 moveBackwards: aMarsRover
-	aMarsRover moveEast! !
+	aMarsRover moveInDirectionOf: (1@0)! !
 
-!West methodsFor: 'movement' stamp: 'TSS 5/31/2022 17:18:33'!
+!West methodsFor: 'movement' stamp: 'TSS 6/1/2022 19:23:13'!
 moveForward: aMarsRover
-	aMarsRover moveWest! !
+	aMarsRover moveInDirectionOf: (-1@0)! !
 
 
 !West methodsFor: 'getter' stamp: 'a 5/27/2022 19:50:20'!
