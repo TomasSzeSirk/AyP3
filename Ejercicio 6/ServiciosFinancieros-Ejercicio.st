@@ -88,8 +88,8 @@ test07AccountKnowsItsTransactions
 	self assert: (account transactions includes: deposit).
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'TSS 6/2/2022 21:59:46'!
-test08
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'a 6/5/2022 23:17:45'!
+test08CanTransferMoneyFromAnAccountToAnother
 
 	| receptiveAccount emmitingAccount|
 	
@@ -97,7 +97,7 @@ test08
 	receptiveAccount := ReceptiveAccount new.
 	
 	Deposit register: 100 * peso on: emmitingAccount.
-	TransferBetweenAccounts register: 50 * peso from: emmitingAccount to: receptiveAccount.
+	TransferenceBetweenAccounts register: 50 * peso from: emmitingAccount to: receptiveAccount.
 	
 	self assert: (emmitingAccount balance = (50 * peso) and: [receptiveAccount balance = (50 * peso)])
 	
@@ -106,34 +106,34 @@ test08
 
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'TSS 6/3/2022 18:17:44'!
-test09
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'a 6/5/2022 23:18:06'!
+test09CannotTransferMoneyToSameAccount
 
 	| account|
 	
 	account := ReceptiveAccount new.
 	
-	self should: [TransferBetweenAccounts register: 50 * peso from: account to: account.]
+	self should: [TransferenceBetweenAccounts register: 50 * peso from: account to: account.]
 		raise: Error - MessageNotUnderstood 
 		withExceptionDo: [ :anError |
-			self assert: anError messageText = TransferBetweenAccounts sameAccountErrorDescription]	
+			self assert: anError messageText = TransferenceBetweenAccounts sameAccountErrorDescription]	
 	
 	
 
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'TSS 6/3/2022 18:33:10'!
-test10
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'a 6/5/2022 23:18:18'!
+test10CannotTransferAValueNegativeToAnAccount
 
 	|emmitingAccount receptiveAccount|
 	
 	emmitingAccount := ReceptiveAccount new.
 	receptiveAccount := ReceptiveAccount new.
 	
-	self should: [TransferBetweenAccounts register: (-50) * peso from: emmitingAccount to: receptiveAccount.]
+	self should: [TransferenceBetweenAccounts register: (-50) * peso from: emmitingAccount to: receptiveAccount.]
 		raise: Error - MessageNotUnderstood 
 		withExceptionDo: [ :anError |
-			self assert: anError messageText = TransferBetweenAccounts negativeValueErrorDescription]	
+			self assert: anError messageText = TransferenceBetweenAccounts negativeValueErrorDescription]	
 		
 	
 	 
@@ -141,20 +141,22 @@ test10
 
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'TSS 6/3/2022 18:40:26'!
-test11
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'a 6/5/2022 23:22:48'!
+test11TheDepositSideAndTheWithdrawSideOfATransferenceKnowEachOther
 
-	|emmitingAccount receptiveAccount|
+	|emmitingAccount receptiveAccount transference deposit withdraw|
 	
 	emmitingAccount := ReceptiveAccount new.
 	receptiveAccount := ReceptiveAccount new.
 		
+	Deposit register: 100 * peso on: emmitingAccount.
+	transference := TransferenceBetweenAccounts register: 100 * peso from: emmitingAccount to: receptiveAccount.
 	
-	 
+	deposit := transference depositOperation.
+	withdraw := transference withdrawOperation.
 	
-
-! !
-
+	self assert: (deposit relatedWithdraw = withdraw and: [ withdraw relatedDeposit = deposit]).
+	! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
@@ -181,7 +183,7 @@ applyTransactionTo: aBalance
 AccountTransaction class
 	instanceVariableNames: ''!
 
-!AccountTransaction class methodsFor: 'instance creation' stamp: 'TSS 6/2/2022 21:13:46'!
+!AccountTransaction class methodsFor: 'instance creation' stamp: 'a 6/5/2022 23:04:25'!
 register: aValue on: account
 	| transaction |
 	
@@ -226,40 +228,82 @@ for: aValue
 	^ self new initializeFor: aValue ! !
 
 
-!classDefinition: #TransferBetweenAccounts category: 'ServiciosFinancieros-Ejercicio'!
-AccountTransaction subclass: #TransferBetweenAccounts
-	instanceVariableNames: 'value'
+!classDefinition: #TransferenceDeposit category: 'ServiciosFinancieros-Ejercicio'!
+Deposit subclass: #TransferenceDeposit
+	instanceVariableNames: 'linkedWithdraw'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!TransferBetweenAccounts methodsFor: 'as yet unclassified' stamp: 'TSS 6/3/2022 18:42:02'!
+!TransferenceDeposit methodsFor: 'as yet unclassified' stamp: 'a 6/5/2022 23:13:46'!
+linkRelatedOperation: anOperation
+
+	linkedWithdraw := anOperation.! !
+
+!TransferenceDeposit methodsFor: 'as yet unclassified' stamp: 'a 6/5/2022 23:15:36'!
+relatedWithdraw
+	^linkedWithdraw.! !
+
+
+!classDefinition: #TransferenceBetweenAccounts category: 'ServiciosFinancieros-Ejercicio'!
+AccountTransaction subclass: #TransferenceBetweenAccounts
+	instanceVariableNames: 'value deposit withdraw'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!TransferenceBetweenAccounts methodsFor: 'as yet unclassified' stamp: 'a 6/5/2022 23:12:28'!
+for: aQuantityOfMoney withEmittingAccount: anEmittingAccount withReceptiveAccount: aReceptiveAccount
+	
+	withdraw := TransferenceWithdraw register: aQuantityOfMoney on: anEmittingAccount .
+	deposit := TransferenceDeposit register: aQuantityOfMoney on: aReceptiveAccount .
+	
+	deposit linkRelatedOperation: withdraw.
+	withdraw linkRelatedOperation: deposit.! !
+
+!TransferenceBetweenAccounts methodsFor: 'as yet unclassified' stamp: 'TSS 6/3/2022 18:42:02'!
 value
 	
 	^value! !
 
+
+!TransferenceBetweenAccounts methodsFor: 'getter' stamp: 'a 6/5/2022 23:14:21'!
+depositOperation
+	^deposit! !
+
+!TransferenceBetweenAccounts methodsFor: 'getter' stamp: 'a 6/5/2022 23:14:27'!
+withdrawOperation
+	^withdraw! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'TransferBetweenAccounts class' category: 'ServiciosFinancieros-Ejercicio'!
-TransferBetweenAccounts class
+!classDefinition: 'TransferenceBetweenAccounts class' category: 'ServiciosFinancieros-Ejercicio'!
+TransferenceBetweenAccounts class
 	instanceVariableNames: ''!
 
-!TransferBetweenAccounts class methodsFor: 'instance creation' stamp: 'TSS 6/3/2022 18:36:28'!
+!TransferenceBetweenAccounts class methodsFor: 'instance creation' stamp: 'a 6/5/2022 23:07:31'!
 register: aQuantityOfMoney from: anEmittingAccount to: aReceptiveAccount 
 	
+	| transference |
 	anEmittingAccount == aReceptiveAccount ifTrue: [self error: self sameAccountErrorDescription ].
 	(aQuantityOfMoney negative) ifTrue: [self error: self negativeValueErrorDescription ].
 	
-	Withdraw register: aQuantityOfMoney on: anEmittingAccount .
-	Deposit register: aQuantityOfMoney on: aReceptiveAccount .! !
+	"Withdraw register: aQuantityOfMoney on: anEmittingAccount .
+	Deposit register: aQuantityOfMoney on: aReceptiveAccount."
+	
+	transference := self new for: aQuantityOfMoney withEmittingAccount: anEmittingAccount withReceptiveAccount: aReceptiveAccount .
+	^transference .
+	
+	
+	! !
 
 
-!TransferBetweenAccounts class methodsFor: 'error description' stamp: 'TSS 6/3/2022 18:34:22'!
+!TransferenceBetweenAccounts class methodsFor: 'error description' stamp: 'TSS 6/3/2022 18:34:22'!
 negativeValueErrorDescription
 
 	^'No se puede pasar un valor negativo para hacer la transaccion'! !
 
-!TransferBetweenAccounts class methodsFor: 'error description' stamp: 'TSS 6/3/2022 18:15:54'!
+!TransferenceBetweenAccounts class methodsFor: 'error description' stamp: 'TSS 6/3/2022 18:15:54'!
 sameAccountErrorDescription
 	^'La cuenta que recibe no puede ser igual a la que emite la plata'! !
 
@@ -297,6 +341,23 @@ Withdraw class
 for: aValue
 
 	^ self new initializeFor: aValue ! !
+
+
+!classDefinition: #TransferenceWithdraw category: 'ServiciosFinancieros-Ejercicio'!
+Withdraw subclass: #TransferenceWithdraw
+	instanceVariableNames: 'linkedDeposit'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!TransferenceWithdraw methodsFor: 'as yet unclassified' stamp: 'a 6/5/2022 23:13:55'!
+linkRelatedOperation: anOperation
+
+	linkedDeposit := anOperation.! !
+
+!TransferenceWithdraw methodsFor: 'as yet unclassified' stamp: 'a 6/5/2022 23:16:41'!
+relatedDeposit
+	^linkedDeposit.! !
 
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
