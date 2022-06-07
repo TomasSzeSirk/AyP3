@@ -1,3 +1,153 @@
+!classDefinition: #PortfolioTest category: 'ServiciosFinancieros-Ejercicio'!
+TestCase subclass: #PortfolioTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:42:59'!
+test01APortfoliosBalanceStartsAtZero 
+
+	| portfolio |
+	
+	portfolio := Portfolio new.
+		
+	self assert: portfolio balance = (0 * peso).
+! !
+
+!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:43:15'!
+test02TheBalanceOfAPortfolioWithOneAccountMatchesTheBalanceOfThatAccount
+
+	| portfolio account |
+	
+	portfolio := Portfolio new.
+	account := ReceptiveAccount new.
+	
+	Deposit register: 100 * peso on: account.
+	
+	portfolio add: account.
+	
+	self assert: portfolio balance = (100 * peso).
+! !
+
+!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:43:30'!
+test03TheBalanceOfAPortfolioIsTheSumOfTheBalancesOfItsAccounts
+
+	| portfolio account1 account2 |
+	
+	portfolio := Portfolio new.
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	
+	Deposit register: 100 * peso on: account1.
+	Deposit register: 100 * peso on: account2.
+	
+	portfolio add: account1.
+	portfolio add: account2.
+		 
+	self assert: portfolio balance = (200 * peso).! !
+
+!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:43:47'!
+test04APortfolioCanStoreAnotherPortfolioInside
+
+	| portfolio1 portfolio2 account1 account2 |
+	
+	portfolio1 := Portfolio new.
+	portfolio2 := Portfolio new.
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	
+	Deposit register: 100 * peso on: account1.
+	Deposit register: 100 * peso on: account2.
+	
+	portfolio1 add: account1.
+	portfolio2 add: account2.
+	portfolio1 add: portfolio2.
+	
+	self assert: portfolio1 balance = (200 * peso).
+! !
+
+!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:44:32'!
+test05NoTransactionsHaveBeenDoneAtTheBeginning
+
+	| portfolio account |
+	
+	portfolio := Portfolio new.
+	account := ReceptiveAccount new.
+	
+	portfolio add: account.
+	
+	self deny: portfolio anyAccountMadeATransaction.
+! !
+
+!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:44:53'!
+test06CanSeeTransactionsMadeByAnAccountInsideAPortfolio
+
+	| portfolio account |
+	
+	portfolio := Portfolio new.
+	account := ReceptiveAccount new.
+	
+	Deposit register: 1500 * peso on: account.
+	portfolio add: account.
+	
+	self assert: portfolio anyAccountMadeATransaction.
+! !
+
+!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:45:16'!
+test07CanSeeTransactionsFromAPortfolioInsideAPortfolio
+
+	| portfolio1 portfolio2 account |
+	
+	portfolio1 := Portfolio new.
+	portfolio2 := Portfolio new.
+	account := ReceptiveAccount new.
+	
+	Deposit register: 1500 * peso on: account.
+	portfolio2 add: account.
+	portfolio1 add: portfolio2.
+	
+	self assert: portfolio1 anyAccountMadeATransaction.
+! !
+
+!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:45:35'!
+test08TransactionsFromAPortfolioAndItsAccountAreTheSame
+
+	| portfolio account |
+	
+	portfolio := Portfolio new.
+	account := ReceptiveAccount new.
+	
+	Deposit register: 1500 * peso on: account.
+	portfolio add: account.
+	
+	self assert: portfolio transactions equals: account transactions
+! !
+
+!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:45:50'!
+test09TransactionsFromAPortfolioAndItsPorfolioAreTheSame
+
+	| portfolio1 portfolio2 account1 account2 listOfTransactions|
+	
+	portfolio1 := Portfolio new.
+	portfolio2 := Portfolio new.
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	listOfTransactions := OrderedCollection new.
+	
+	Withdraw register: 100 * peso on: account1.
+	Deposit register: 100 * peso on: account2.
+	
+	portfolio1 add: account1.
+	portfolio2 add: account2.
+	portfolio1 add: portfolio2.
+	
+	listOfTransactions addAll: account1 transactions.
+	listOfTransactions addAll: portfolio2 transactions.
+	
+	self assert: portfolio1 transactions equals: listOfTransactions ! !
+
+
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Ejercicio'!
 TestCase subclass: #ReceptiveAccountTest
 	instanceVariableNames: ''
@@ -87,148 +237,6 @@ test07AccountKnowsItsTransactions
 	self assert: 1 equals: account transactions size.
 	self assert: (account transactions includes: deposit).
 ! !
-
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'TSS 6/6/2022 20:20:14'!
-test12APortfoliosBalanceStartsAtZero 
-
-	| portfolio |
-	
-	portfolio := Portfolio new.
-		
-	self assert: portfolio balance = (0 * peso).
-! !
-
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'TSS 6/6/2022 20:24:17'!
-test13TheBalanceOfAPortfolioWithOneAccountMatchesTheBalanceOfThatAccount
-
-	| portfolio account |
-	
-	portfolio := Portfolio new.
-	account := ReceptiveAccount new.
-	
-	Deposit register: 100 * peso on: account.
-	
-	portfolio add: account.
-	
-	self assert: portfolio balance = (100 * peso).
-! !
-
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'TSS 6/6/2022 20:24:10'!
-test14TheBalanceOfAPortfolioIsTheSumOfTheBalancesOfItsAccounts
-
-	| portfolio account1 account2 |
-	
-	portfolio := Portfolio new.
-	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.
-	
-	Deposit register: 100 * peso on: account1.
-	Deposit register: 100 * peso on: account2.
-	
-	portfolio add: account1.
-	portfolio add: account2.
-		 
-	self assert: portfolio balance = (200 * peso).! !
-
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'TSS 6/6/2022 20:24:03'!
-test15APortfolioCanStoreAnotherPortfolioInside
-
-	| portfolio1 portfolio2 account1 account2 |
-	
-	portfolio1 := Portfolio new.
-	portfolio2 := Portfolio new.
-	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.
-	
-	Deposit register: 100 * peso on: account1.
-	Deposit register: 100 * peso on: account2.
-	
-	portfolio1 add: account1.
-	portfolio2 add: account2.
-	portfolio1 add: portfolio2.
-	
-	self assert: portfolio1 balance = (200 * peso).
-! !
-
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'TSS 6/6/2022 20:28:44'!
-test16
-
-	| portfolio account |
-	
-	portfolio := Portfolio new.
-	account := ReceptiveAccount new.
-	
-	portfolio add: account.
-	
-	self deny: portfolio anyAccountMadeATransaction.
-! !
-
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'TSS 6/6/2022 20:32:17'!
-test17
-
-	| portfolio account |
-	
-	portfolio := Portfolio new.
-	account := ReceptiveAccount new.
-	
-	Deposit register: 1500 * peso on: account.
-	portfolio add: account.
-	
-	self assert: portfolio anyAccountMadeATransaction.
-! !
-
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'TSS 6/6/2022 20:34:15'!
-test18
-
-	| portfolio1 portfolio2 account |
-	
-	portfolio1 := Portfolio new.
-	portfolio2 := Portfolio new.
-	account := ReceptiveAccount new.
-	
-	Deposit register: 1500 * peso on: account.
-	portfolio2 add: account.
-	portfolio1 add: portfolio2.
-	
-	self assert: portfolio1 anyAccountMadeATransaction.
-! !
-
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'TSS 6/6/2022 20:55:20'!
-test19
-
-	| portfolio account |
-	
-	portfolio := Portfolio new.
-	account := ReceptiveAccount new.
-	
-	Deposit register: 1500 * peso on: account.
-	portfolio add: account.
-	
-	self assert: portfolio transactions equals: account transactions
-! !
-
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'TSS 6/6/2022 21:20:46'!
-test20
-
-	| portfolio1 portfolio2 account1 account2 listOfTransactions|
-	
-	portfolio1 := Portfolio new.
-	portfolio2 := Portfolio new.
-	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.
-	listOfTransactions := OrderedCollection new.
-	
-	Withdraw register: 100 * peso on: account1.
-	Deposit register: 100 * peso on: account2.
-	
-	portfolio1 add: account1.
-	portfolio2 add: account2.
-	portfolio1 add: portfolio2.
-	
-	listOfTransactions addAll: account1 transactions.
-	listOfTransactions addAll: portfolio2 transactions.
-	
-	self assert: portfolio1 transactions equals: listOfTransactions ! !
 
 
 !classDefinition: #TransferenceTest category: 'ServiciosFinancieros-Ejercicio'!
