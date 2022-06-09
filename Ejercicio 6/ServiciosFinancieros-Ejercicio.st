@@ -1,53 +1,11 @@
 !classDefinition: #PortfolioTest category: 'ServiciosFinancieros-Ejercicio'!
 TestCase subclass: #PortfolioTest
-	instanceVariableNames: ''
+	instanceVariableNames: 'portfolioA portfolioB accountA accountB'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:42:59'!
-test01APortfoliosBalanceStartsAtZero 
-
-	| portfolio |
-	
-	portfolio := Portfolio new.
-		
-	self assert: portfolio balance = (0 * peso).
-! !
-
-!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:43:15'!
-test02TheBalanceOfAPortfolioWithOneAccountMatchesTheBalanceOfThatAccount
-
-	| portfolio account |
-	
-	portfolio := Portfolio new.
-	account := ReceptiveAccount new.
-	
-	Deposit register: 100 * peso on: account.
-	
-	portfolio add: account.
-	
-	self assert: portfolio balance = (100 * peso).
-! !
-
-!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:43:30'!
-test03TheBalanceOfAPortfolioIsTheSumOfTheBalancesOfItsAccounts
-
-	| portfolio account1 account2 |
-	
-	portfolio := Portfolio new.
-	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.
-	
-	Deposit register: 100 * peso on: account1.
-	Deposit register: 100 * peso on: account2.
-	
-	portfolio add: account1.
-	portfolio add: account2.
-		 
-	self assert: portfolio balance = (200 * peso).! !
-
-!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:43:47'!
+!PortfolioTest methodsFor: 'tests' stamp: 'TSS 6/6/2022 21:43:47'!
 test04APortfolioCanStoreAnotherPortfolioInside
 
 	| portfolio1 portfolio2 account1 account2 |
@@ -67,85 +25,168 @@ test04APortfolioCanStoreAnotherPortfolioInside
 	self assert: portfolio1 balance = (200 * peso).
 ! !
 
-!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:44:32'!
+
+!PortfolioTest methodsFor: 'initializing' stamp: 'a 6/8/2022 18:45:37'!
+setUp
+	
+	portfolioA := Portfolio new.
+	portfolioB := Portfolio new.
+	
+	accountA := ReceptiveAccount new.
+	accountB := ReceptiveAccount new.
+! !
+
+
+!PortfolioTest methodsFor: 'balance tests' stamp: 'a 6/8/2022 18:45:54'!
+test01APortfoliosBalanceStartsAtZero 
+
+	self assert: portfolioA balance = (0 * peso).
+! !
+
+!PortfolioTest methodsFor: 'balance tests' stamp: 'a 6/8/2022 18:46:06'!
+test02TheBalanceOfAPortfolioWithOneAccountMatchesTheBalanceOfThatAccount
+
+	
+	Deposit register: 100 * peso on: accountA.
+	
+	portfolioA add: accountA.
+	
+	self assert: portfolioA balance = (100 * peso).
+! !
+
+!PortfolioTest methodsFor: 'balance tests' stamp: 'a 6/8/2022 18:46:17'!
+test03TheBalanceOfAPortfolioIsTheSumOfTheBalancesOfItsAccounts
+	
+	Deposit register: 100 * peso on: accountA.
+	Deposit register: 100 * peso on: accountB.
+	
+	portfolioA add: accountA.
+	portfolioA add: accountB.
+		 
+	self assert: portfolioA balance = (200 * peso).! !
+
+!PortfolioTest methodsFor: 'balance tests' stamp: 'a 6/8/2022 18:48:23'!
+test04APortfolioCanStoreAnotherPortfolio
+	
+	Deposit register: 100 * peso on: accountA.
+	Deposit register: 100 * peso on: accountB.
+	
+	portfolioA add: accountA.
+	portfolioB add: accountB.
+	portfolioA add: portfolioB.
+	
+	self assert: portfolioA balance = (200 * peso).
+! !
+
+
+!PortfolioTest methodsFor: 'accessing tests' stamp: 'a 6/8/2022 18:47:00'!
 test05NoTransactionsHaveBeenDoneAtTheBeginning
 
-	| portfolio account |
+	portfolioA add: accountA.
 	
-	portfolio := Portfolio new.
-	account := ReceptiveAccount new.
-	
-	portfolio add: account.
-	
-	self deny: portfolio anyAccountMadeATransaction.
+	self deny: portfolioA anyAccountMadeATransaction.
 ! !
 
-!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:44:53'!
+!PortfolioTest methodsFor: 'accessing tests' stamp: 'a 6/8/2022 18:48:45'!
 test06CanSeeTransactionsMadeByAnAccountInsideAPortfolio
-
-	| portfolio account |
 	
-	portfolio := Portfolio new.
-	account := ReceptiveAccount new.
+	Deposit register: 1500 * peso on: accountA.
+	portfolioA add: accountA.
 	
-	Deposit register: 1500 * peso on: account.
-	portfolio add: account.
-	
-	self assert: portfolio anyAccountMadeATransaction.
+	self assert: portfolioA anyAccountMadeATransaction.
 ! !
 
-!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:45:16'!
+!PortfolioTest methodsFor: 'accessing tests' stamp: 'a 6/8/2022 18:48:50'!
 test07CanSeeTransactionsFromAPortfolioInsideAPortfolio
-
-	| portfolio1 portfolio2 account |
 	
-	portfolio1 := Portfolio new.
-	portfolio2 := Portfolio new.
-	account := ReceptiveAccount new.
+	Deposit register: 1500 * peso on: accountA.
+	portfolioB add: accountA.
+	portfolioA add: portfolioB.
 	
-	Deposit register: 1500 * peso on: account.
-	portfolio2 add: account.
-	portfolio1 add: portfolio2.
-	
-	self assert: portfolio1 anyAccountMadeATransaction.
+	self assert: portfolioA anyAccountMadeATransaction.
 ! !
 
-!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:45:35'!
+!PortfolioTest methodsFor: 'accessing tests' stamp: 'a 6/8/2022 18:49:05'!
 test08TransactionsFromAPortfolioAndItsAccountAreTheSame
 
-	| portfolio account |
+	Deposit register: 1500 * peso on: accountA.
+	portfolioA add: accountA.
 	
-	portfolio := Portfolio new.
-	account := ReceptiveAccount new.
-	
-	Deposit register: 1500 * peso on: account.
-	portfolio add: account.
-	
-	self assert: portfolio transactions equals: account transactions
+	self assert: portfolioA transactions equals: accountA transactions
 ! !
 
-!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:45:50'!
+!PortfolioTest methodsFor: 'accessing tests' stamp: 'a 6/8/2022 18:49:50'!
 test09TransactionsFromAPortfolioAndItsPorfolioAreTheSame
 
-	| portfolio1 portfolio2 account1 account2 listOfTransactions|
-	
-	portfolio1 := Portfolio new.
-	portfolio2 := Portfolio new.
-	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.
+	| listOfTransactions |
 	listOfTransactions := OrderedCollection new.
+
+	Withdraw register: 100 * peso on: accountA.
+	Deposit register: 100 * peso on: accountB.
 	
-	Withdraw register: 100 * peso on: account1.
-	Deposit register: 100 * peso on: account2.
+	portfolioA add: accountA.
+	portfolioB add: accountB.
+	portfolioA add: portfolioB.
 	
-	portfolio1 add: account1.
-	portfolio2 add: account2.
-	portfolio1 add: portfolio2.
+	listOfTransactions addAll: accountA transactions.
+	listOfTransactions addAll: portfolioB transactions.
 	
-	listOfTransactions addAll: account1 transactions.
-	listOfTransactions addAll: portfolio2 transactions.
+	self assert: portfolioA transactions equals: listOfTransactions ! !
+
+
+!PortfolioTest methodsFor: 'extra tests' stamp: 'a 6/8/2022 20:06:27'!
+test10CannotAddSameAccountTwiceToAPortfolio
+
+	portfolioA add: accountA.
 	
-	self assert: portfolio1 transactions equals: listOfTransactions ! !
+	self should: [portfolioA add: accountA]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Portfolio AccountAlreadyExistsErrorDescription ].! !
+
+!PortfolioTest methodsFor: 'extra tests' stamp: 'a 6/8/2022 19:04:13'!
+test11PortfolioCannotAddItself
+
+	self should: [portfolioA add: portfolioA.]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Portfolio PortfolioAddingItselfErrorDescription].! !
+
+!PortfolioTest methodsFor: 'extra tests' stamp: 'a 6/8/2022 20:04:41'!
+test12CannotAddAnAccountThatAlreadyExistsInsideAnotherPortfolio
+	
+	
+	portfolioB add: accountA.
+	portfolioA add: portfolioB.
+	
+	self should: [portfolioA add: accountA]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Portfolio AccountAlreadyExistsErrorDescription ].! !
+
+!PortfolioTest methodsFor: 'extra tests' stamp: 'a 6/8/2022 20:05:26'!
+test13CannotAddAPortfolioWithAnAlreadyExistingAccount
+	
+	
+	portfolioA add: accountA.
+	portfolioB add: accountA.
+	
+	self should: [portfolioA add: portfolioB]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Portfolio AccountAlreadyExistsErrorDescription ].! !
+
+!PortfolioTest methodsFor: 'extra tests' stamp: 'a 6/8/2022 20:05:36'!
+test14CannotAddAnAccountToAChildPortfolioThatAlreadyExistsInsideItsFather
+	
+	
+	portfolioA add: accountA.
+	portfolioA add: portfolioB.
+	
+	self should: [portfolioB add: accountA]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Portfolio AccountAlreadyExistsErrorDescription ].! !
 
 
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Ejercicio'!
@@ -241,37 +282,28 @@ test07AccountKnowsItsTransactions
 
 !classDefinition: #TransferenceTest category: 'ServiciosFinancieros-Ejercicio'!
 TestCase subclass: #TransferenceTest
-	instanceVariableNames: ''
+	instanceVariableNames: 'issuingAccount receivingAccount'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!TransferenceTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:28:40'!
+!TransferenceTest methodsFor: 'tests' stamp: 'a 6/8/2022 18:41:57'!
 test01CanTransferMoneyFromAnAccountToAnother
 
-	| receptiveAccount emmitingAccount|
+	Deposit register: 100 * peso on: issuingAccount.
+	TransferenceBetweenAccounts register: 50 * peso from: issuingAccount to: receivingAccount .
 	
-	emmitingAccount := ReceptiveAccount new.
-	receptiveAccount := ReceptiveAccount new.
-	
-	Deposit register: 100 * peso on: emmitingAccount.
-	TransferenceBetweenAccounts register: 50 * peso from: emmitingAccount to: receptiveAccount.
-	
-	self assert: (emmitingAccount balance = (50 * peso) and: [receptiveAccount balance = (50 * peso)])
+	self assert: (issuingAccount balance = (50 * peso) and: [receivingAccount balance = (50 * peso)])
 	
 	
 	
 
 ! !
 
-!TransferenceTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:29:01'!
+!TransferenceTest methodsFor: 'tests' stamp: 'a 6/8/2022 18:42:39'!
 test02CannotTransferMoneyToSameAccount
 
-	| account|
-	
-	account := ReceptiveAccount new.
-	
-	self should: [TransferenceBetweenAccounts register: 50 * peso from: account to: account.]
+	self should: [TransferenceBetweenAccounts register: 50 * peso from: issuingAccount to: issuingAccount]
 		raise: Error - MessageNotUnderstood 
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = TransferenceBetweenAccounts sameAccountErrorDescription]	
@@ -280,15 +312,10 @@ test02CannotTransferMoneyToSameAccount
 
 ! !
 
-!TransferenceTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:29:26'!
+!TransferenceTest methodsFor: 'tests' stamp: 'a 6/8/2022 18:42:53'!
 test03CannotTransferANegativeValueToAnAccount
 
-	|emmitingAccount receptiveAccount|
-	
-	emmitingAccount := ReceptiveAccount new.
-	receptiveAccount := ReceptiveAccount new.
-	
-	self should: [TransferenceBetweenAccounts register: (-50) * peso from: emmitingAccount to: receptiveAccount.]
+	self should: [TransferenceBetweenAccounts register: (-50) * peso from: issuingAccount to: receivingAccount ]
 		raise: Error - MessageNotUnderstood 
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = TransferenceBetweenAccounts negativeValueErrorDescription]	
@@ -299,22 +326,31 @@ test03CannotTransferANegativeValueToAnAccount
 
 ! !
 
-!TransferenceTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:29:43'!
+!TransferenceTest methodsFor: 'tests' stamp: 'a 6/8/2022 18:44:14'!
 test04TheDepositSideAndTheWithdrawSideOfATransferenceKnowEachOther
 
-	|emmitingAccount receptiveAccount transference deposit withdraw|
-	
-	emmitingAccount := ReceptiveAccount new.
-	receptiveAccount := ReceptiveAccount new.
-		
-	Deposit register: 100 * peso on: emmitingAccount.
-	transference := TransferenceBetweenAccounts register: 100 * peso from: emmitingAccount to: receptiveAccount.
+	| transference deposit withdraw |
+
+	Deposit register: 100 * peso on: issuingAccount.
+	transference := TransferenceBetweenAccounts register: 100 * peso from: issuingAccount to: receivingAccount.
 	
 	deposit := transference depositOperation.
 	withdraw := transference withdrawOperation.
 	
 	self assert: (deposit relatedWithdraw = withdraw and: [ withdraw relatedDeposit = deposit]).
 	! !
+
+
+!TransferenceTest methodsFor: 'initializing' stamp: 'a 6/8/2022 18:41:24'!
+setUp
+	
+	issuingAccount := ReceptiveAccount new.
+	receivingAccount := ReceptiveAccount new.
+	
+	
+	
+
+! !
 
 
 !classDefinition: #Account category: 'ServiciosFinancieros-Ejercicio'!
@@ -324,66 +360,125 @@ Object subclass: #Account
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!Account methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 20:47:40'!
+
+!Account methodsFor: 'main protocol' stamp: 'TSS 6/6/2022 20:47:40'!
 balance
 	self subclassResponsibility ! !
 
-!Account methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 20:47:00'!
+!Account methodsFor: 'main protocol' stamp: 'TSS 6/6/2022 20:55:55'!
+transactions
+	self subclassResponsibility ! !
+
+
+!Account methodsFor: 'testing' stamp: 'TSS 6/6/2022 20:47:00'!
 hasMadeTransactions
 	self subclassResponsibility.! !
 
-!Account methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 20:48:19'!
+!Account methodsFor: 'testing' stamp: 'a 6/8/2022 19:51:31'!
+isDuplicateOf: anAccount
+	self subclassResponsibility.! !
+
+
+!Account methodsFor: 'initialization' stamp: 'TSS 6/6/2022 20:48:19'!
 initialize
 	self subclassResponsibility ! !
 
-!Account methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 20:55:55'!
-transactions
-	self subclassResponsibility ! !
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Account class' category: 'ServiciosFinancieros-Ejercicio'!
+Account class
+	instanceVariableNames: ''!
+
+!Account class methodsFor: 'error description' stamp: 'a 6/8/2022 18:54:28'!
+AccountAlreadyInPortfolioErrorDescription
+	^'The account already exists inside the portfolio'! !
 
 
 !classDefinition: #Portfolio category: 'ServiciosFinancieros-Ejercicio'!
 Account subclass: #Portfolio
-	instanceVariableNames: 'accounts'
+	instanceVariableNames: 'accounts fatherPortfolio'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 20:42:47'!
-add: anAccount 
-	accounts add: anAccount .! !
-
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 20:43:40'!
+!Portfolio methodsFor: 'testing' stamp: 'a 6/8/2022 18:20:41'!
 anyAccountMadeATransaction
-	
-	
 	^accounts anySatisfy: [:anAccount | anAccount hasMadeTransactions].
 	! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:27:43'!
+!Portfolio methodsFor: 'testing' stamp: 'a 6/8/2022 19:15:36'!
+hasMadeTransactions
+	^accounts anySatisfy: [:anAccount | anAccount hasMadeTransactions]! !
+
+!Portfolio methodsFor: 'testing' stamp: 'a 6/8/2022 19:49:41'!
+isDuplicateOf: anAccount
+	^accounts anySatisfy: [:anExistingAccount| anExistingAccount isDuplicateOf: anAccount ].! !
+
+!Portfolio methodsFor: 'testing' stamp: 'a 6/8/2022 20:04:15'!
+verifyThereIsNoDuplicateOf: anAccount
+	fatherPortfolio isNil not ifTrue: [ fatherPortfolio verifyThereIsNoDuplicateOf: anAccount ].
+	(accounts anySatisfy: [:anExistingAccount | anExistingAccount isDuplicateOf: anAccount]) ifTrue: [self error: Portfolio AccountAlreadyExistsErrorDescription].
+	(accounts anySatisfy: [:anExistingAccount | anAccount isDuplicateOf: anExistingAccount]) ifTrue: [self error: Portfolio AccountAlreadyExistsErrorDescription].! !
+
+
+!Portfolio methodsFor: 'main protocol' stamp: 'a 6/8/2022 20:08:20'!
+add: anAccount 
+
+	self verifyCurrentPortfolioIsDifferentFrom: anAccount.
+	self verifyThereIsNoDuplicateOf: anAccount.
+	
+	accounts add: anAccount.
+	(anAccount isKindOf: Portfolio) ifTrue: [anAccount assignFatherPortfolio: self].! !
+
+!Portfolio methodsFor: 'main protocol' stamp: 'TSS 6/6/2022 21:27:43'!
 balance
 	| balance |
 	balance := 0.
 	accounts do: [:anAccount | balance := balance + anAccount balance].
 	^balance! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 20:40:33'!
-hasMadeTransactions
-	^accounts anySatisfy: [:anAccount| anAccount hasMadeTransactions]! !
+!Portfolio methodsFor: 'main protocol' stamp: 'TSS 6/6/2022 20:52:45'!
+transactionsFromAccount: aReceptiveAccount 
+	self shouldBeImplemented.! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 20:09:33'!
+
+!Portfolio methodsFor: 'initialization' stamp: 'TSS 6/6/2022 20:09:33'!
 initialize
 	accounts := OrderedCollection new.! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 21:18:35'!
+
+!Portfolio methodsFor: 'testing - private' stamp: 'a 6/8/2022 20:08:19'!
+verifyCurrentPortfolioIsDifferentFrom: anAccount
+
+	^ (self == anAccount) ifTrue: [self error: Portfolio PortfolioAddingItselfErrorDescription]! !
+
+
+!Portfolio methodsFor: 'getter' stamp: 'a 6/8/2022 18:21:20'!
 transactions
 	|transactions|
 	transactions := OrderedCollection new.
 	accounts do: [:anAccount| transactions addAll: anAccount transactions].
-	^transactions ! !
+	^transactions! !
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 20:52:45'!
-transactionsFromAccount: aReceptiveAccount 
-	self shouldBeImplemented.! !
+
+!Portfolio methodsFor: 'initialization - private' stamp: 'a 6/8/2022 20:01:21'!
+assignFatherPortfolio: aPortfolio
+
+	fatherPortfolio := aPortfolio.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Portfolio class' category: 'ServiciosFinancieros-Ejercicio'!
+Portfolio class
+	instanceVariableNames: ''!
+
+!Portfolio class methodsFor: 'error description' stamp: 'a 6/8/2022 20:04:23'!
+AccountAlreadyExistsErrorDescription
+	^'The account already exists'! !
+
+!Portfolio class methodsFor: 'error description' stamp: 'a 6/8/2022 19:06:25'!
+PortfolioAddingItselfErrorDescription
+	^'A portfolio cannot add itself'! !
 
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
@@ -397,12 +492,6 @@ Account subclass: #ReceptiveAccount
 initialize
 
 	transactions := OrderedCollection new.! !
-
-
-!ReceptiveAccount methodsFor: 'category-name' stamp: 'TSS 6/3/2022 18:21:11'!
-= anAccount
-
-	! !
 
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'TSS 6/2/2022 21:22:38'!
@@ -424,15 +513,20 @@ register: aTransaction
 	transactions add: aTransaction 
 ! !
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'HernanWilkinson 7/13/2011 18:37'!
+
+!ReceptiveAccount methodsFor: 'testing' stamp: 'TSS 6/6/2022 20:41:45'!
+hasMadeTransactions
+	^self transactions isEmpty not! !
+
+!ReceptiveAccount methodsFor: 'testing' stamp: 'a 6/8/2022 19:51:20'!
+isDuplicateOf: anAccount
+	^self == anAccount.! !
+
+
+!ReceptiveAccount methodsFor: 'getter' stamp: 'HernanWilkinson 7/13/2011 18:37'!
 transactions 
 
 	^ transactions copy! !
-
-
-!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'TSS 6/6/2022 20:41:45'!
-hasMadeTransactions
-	^self transactions isEmpty not! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
@@ -584,11 +678,11 @@ Object subclass: #TransferenceBetweenAccounts
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!TransferenceBetweenAccounts methodsFor: 'initialization' stamp: 'a 6/5/2022 23:12:28'!
-for: aQuantityOfMoney withEmittingAccount: anEmittingAccount withReceptiveAccount: aReceptiveAccount
+!TransferenceBetweenAccounts methodsFor: 'initialization' stamp: 'a 6/8/2022 18:55:48'!
+for: aQuantityOfMoney withEmittingAccount: anIssuingAccount withReceptiveAccount: aReceivingAccount
 	
-	withdraw := TransferenceWithdraw register: aQuantityOfMoney on: anEmittingAccount .
-	deposit := TransferenceDeposit register: aQuantityOfMoney on: aReceptiveAccount .
+	withdraw := TransferenceWithdraw register: aQuantityOfMoney on: anIssuingAccount .
+	deposit := TransferenceDeposit register: aQuantityOfMoney on: aReceivingAccount .
 	
 	deposit linkRelatedOperation: withdraw.
 	withdraw linkRelatedOperation: deposit.! !
@@ -627,14 +721,13 @@ register: anAmountOfMoney from: anEmittingAccount to: aReceptiveAccount
 	! !
 
 
-!TransferenceBetweenAccounts class methodsFor: 'error description' stamp: 'TSS 6/3/2022 18:34:22'!
+!TransferenceBetweenAccounts class methodsFor: 'error description' stamp: 'a 6/8/2022 18:55:02'!
 negativeValueErrorDescription
+	^'Cannot use a negative value for a transaction'! !
 
-	^'No se puede pasar un valor negativo para hacer la transaccion'! !
-
-!TransferenceBetweenAccounts class methodsFor: 'error description' stamp: 'TSS 6/3/2022 18:15:54'!
+!TransferenceBetweenAccounts class methodsFor: 'error description' stamp: 'a 6/8/2022 18:55:18'!
 sameAccountErrorDescription
-	^'La cuenta que recibe no puede ser igual a la que emite la plata'! !
+	^'issuing and receiving account cannot be the same'! !
 
 
 !TransferenceBetweenAccounts class methodsFor: 'verifier' stamp: 'TSS 6/6/2022 21:25:14'!
