@@ -1,78 +1,95 @@
 !classDefinition: #AccountSummaryTest category: 'ServiciosFinancieros-Solucion'!
 TestCase subclass: #AccountSummaryTest
-	instanceVariableNames: ''
+	instanceVariableNames: 'account1 accountSummaryOfAccount1 correctSummary account2'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/14/2022 20:59:28'!
-test01
-	|accountSummary account summary|
+!AccountSummaryTest methodsFor: 'tests' stamp: 'TSS 6/15/2022 19:35:06'!
+test01AccountDidntMakeTransactionsBalanceShowZero
+	|summary |
+	correctSummary add: 'Balance = 0 * pesos'.
 	
-	account := ReceptiveAccount new.
+	summary := accountSummaryOfAccount1 displaySummary.
 	
-	accountSummary := AccountSummary of: account .
-	
-	summary := accountSummary displaySummary.
-	
-	self assert: (summary at: 1) = 'Balance = 0 * pesos'! !
+	self assert: summary = correctSummary! !
 
-!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/14/2022 21:14:42'!
-test02
-	|accountSummary account summary|
+!AccountSummaryTest methodsFor: 'tests' stamp: 'TSS 6/15/2022 19:35:06'!
+test02IfAccountDidDepositShowDepositMessage
+	|summary |
 	
-	account := ReceptiveAccount new.
-	Deposit register: 100*peso on: account.
+	Deposit register: 100*peso on: account1.
 	
-	accountSummary := AccountSummary of: account .
+	correctSummary add: 'Depósito por 100 * pesos'.
+	correctSummary add: 'Balance = 100 * pesos'.
 	
-	summary := accountSummary displaySummary.
+	summary := accountSummaryOfAccount1 displaySummary.
 	
-	self assert: (summary at: 1) = 'Depósito por 100 * pesos'! !
+	self assert: summary = correctSummary! !
 
-!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/14/2022 21:14:34'!
-test03
-	|accountSummary account summary|
+!AccountSummaryTest methodsFor: 'tests' stamp: 'TSS 6/15/2022 19:35:06'!
+test03IfAccountDidWithdrawShowWithdrawMessage
+	|summary |
 	
-	account := ReceptiveAccount new.
-	Withdraw register: 100*peso on: account.
-	
-	accountSummary := AccountSummary of: account .
-	
-	summary := accountSummary displaySummary.
-	
-	self assert: (summary at: 1) = 'Extracción por 100 * pesos'! !
+	Withdraw register: 100*peso on: account1.
 
-!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/14/2022 21:23:32'!
-test04
-	|accountSummary1 account1 summary1 accountSummary2 account2 summary2|
+	correctSummary add: 'Extracción por 100 * pesos'.
+	correctSummary add: 'Balance = -100 * pesos'.
 	
-	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.
+	accountSummaryOfAccount1 := AccountSummary of: account1 .
+	
+	summary := accountSummaryOfAccount1 displaySummary.
+	
+	self assert: summary = correctSummary.! !
+
+!AccountSummaryTest methodsFor: 'tests' stamp: 'TSS 6/15/2022 19:35:06'!
+test04IfAccountReceiveATransferShowDepositLegMessage
+	|summary |
+	
+	Transfer amount: 100*peso from: account2 to: account1.
+	
+	correctSummary add: 'Entrada por transferencia de 100 * pesos'.
+	correctSummary add: 'Balance = 100 * pesos'.
+	
+	summary := accountSummaryOfAccount1 displaySummary.
+	
+	self assert: summary = correctSummary.! !
+
+!AccountSummaryTest methodsFor: 'tests' stamp: 'TSS 6/15/2022 19:35:06'!
+test05IfAccountReceiveATransferShowWithdrawLegMessage
+	|summary |
+	
 	Transfer amount: 100*peso from: account1 to: account2.
 	
-	accountSummary1 := AccountSummary of: account1 .
-	accountSummary2 := AccountSummary of: account2 .
+	correctSummary add: 'Salida por transferencia de 100 * pesos'.
+	correctSummary add: 'Balance = -100 * pesos'.
 	
-	summary1 := accountSummary1 displaySummary.
-	summary2 := accountSummary2 displaySummary.
+	summary := accountSummaryOfAccount1 displaySummary.
 	
-	self assert: (summary1 at: 1) = 'Salida por transferencia de 100 * pesos'.
-	self assert: (summary2 at: 1) = 'Entrada por transferencia de 100 * pesos'.! !
+	self assert: summary = correctSummary.! !
 
-!AccountSummaryTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/14/2022 21:25:28'!
-test05
-	|accountSummary account summary|
+!AccountSummaryTest methodsFor: 'tests' stamp: 'TSS 6/15/2022 19:35:06'!
+test06IfAccountDoMultipleTransactionsShowAllTheCorrespondingMessagesWithTheCompleteBalance
+	|summary |
 	
-	account := ReceptiveAccount new.
-	Withdraw register: 100*peso on: account.
-	Deposit register: 1500*peso on: account.
+	Withdraw register: 100*peso on: account1.
+	Deposit register: 1500*peso on: account1.
+
+	correctSummary add: 'Extracción por 100 * pesos'.
+	correctSummary add: 'Depósito por 1500 * pesos'.
+	correctSummary add: 'Balance = 1400 * pesos'.
 	
-	accountSummary := AccountSummary of: account .
+	summary := accountSummaryOfAccount1 displaySummary.
 	
-	summary := accountSummary displaySummary.
-	
-	self assert: (summary at: 3) = 'Balance = 1400 * pesos'! !
+	self assert: summary = correctSummary! !
+
+
+!AccountSummaryTest methodsFor: 'setup' stamp: 'TSS 6/15/2022 19:35:06'!
+setUp
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	accountSummaryOfAccount1 := AccountSummary of: account1.
+	correctSummary := OrderedCollection new.! !
 
 
 !classDefinition: #PortfolioTest category: 'ServiciosFinancieros-Solucion'!
@@ -381,23 +398,23 @@ test07AccountKnowsItsTransactions
 
 !classDefinition: #TransferNetTest category: 'ServiciosFinancieros-Solucion'!
 TestCase subclass: #TransferNetTest
-	instanceVariableNames: ''
+	instanceVariableNames: 'account1 account2'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!TransferNetTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/14/2022 21:33:54'!
-test01
-	|transferNet account|
+!TransferNetTest methodsFor: 'tests' stamp: 'TSS 6/15/2022 19:20:53'!
+test01IfAccountDidntMakeATransferTransferNetIsZero
+	|transferNet|
 	
-	account := ReceptiveAccount new.
-	transferNet := TransferNet of: account.
+	account1 := ReceptiveAccount new.
+	transferNet := TransferNet of: account1.
 	
 	self assert: transferNet displayTransferNet = (0*peso)! !
 
-!TransferNetTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/14/2022 21:42:46'!
-test02
-	|transferNet account1 account2|
+!TransferNetTest methodsFor: 'tests' stamp: 'TSS 6/15/2022 19:21:02'!
+test02IfAccountReceiveATransferTransferNetIsPositive
+	|transferNet |
 	
 	account1 := ReceptiveAccount new.
 	account2 := ReceptiveAccount new.
@@ -407,9 +424,9 @@ test02
 	
 	self assert: transferNet displayTransferNet = (50*peso)! !
 
-!TransferNetTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 15:43:48'!
-test03
-	|transferNet account1 account2|
+!TransferNetTest methodsFor: 'tests' stamp: 'TSS 6/15/2022 19:21:02'!
+test03IfAccountSendATransferTransferNetIsNegative
+	|transferNet |
 	
 	account1 := ReceptiveAccount new.
 	account2 := ReceptiveAccount new.
@@ -419,9 +436,9 @@ test03
 	
 	self assert: transferNet displayTransferNet = (-50*peso)! !
 
-!TransferNetTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 15:43:30'!
-test04
-	|transferNet account1 account2|
+!TransferNetTest methodsFor: 'tests' stamp: 'TSS 6/15/2022 19:21:02'!
+test04IfAccountReceiveAndMadeTransfersTransferNetWouldAccumulate
+	|transferNet |
 	
 	account1 := ReceptiveAccount new.
 	account2 := ReceptiveAccount new.
@@ -432,9 +449,9 @@ test04
 	
 	self assert: transferNet displayTransferNet = (-150*peso)! !
 
-!TransferNetTest methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 15:43:24'!
-test05
-	|transferNet account1 account2|
+!TransferNetTest methodsFor: 'tests' stamp: 'TSS 6/15/2022 19:21:02'!
+test05IfAccountDoAWithdrawDontAddItToTransferNet
+	|transferNet |
 	
 	account1 := ReceptiveAccount new.
 	account2 := ReceptiveAccount new.
@@ -444,6 +461,23 @@ test05
 	transferNet := TransferNet of: account2.
 	
 	self assert: transferNet displayTransferNet = (50*peso)! !
+
+!TransferNetTest methodsFor: 'tests' stamp: 'TSS 6/15/2022 19:20:53'!
+test06IfAccountDoADepositDontAddItToTransferNet
+	|transferNet|
+	
+	account1 := ReceptiveAccount new.
+	Deposit register: 50*peso on: account1 .
+	
+	transferNet := TransferNet of: account1 .
+	
+	self assert: transferNet displayTransferNet = (0*peso)! !
+
+
+!TransferNetTest methodsFor: 'setup' stamp: 'TSS 6/15/2022 19:21:45'!
+setUp
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.! !
 
 
 !classDefinition: #TransferTest category: 'ServiciosFinancieros-Solucion'!
@@ -782,32 +816,77 @@ isComposedBy: anAccount
 	^self = anAccount ! !
 
 
-!classDefinition: #AccountSummary category: 'ServiciosFinancieros-Solucion'!
-Object subclass: #AccountSummary
-	instanceVariableNames: 'account'
+!classDefinition: #AccountReport category: 'ServiciosFinancieros-Solucion'!
+Object subclass: #AccountReport
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!AccountSummary methodsFor: 'initialization' stamp: 'TSS 6/14/2022 21:00:36'!
+!AccountReport methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 17:00:12'!
+initialize
+	self subclassResponsibility ! !
+
+!AccountReport methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 17:00:30'!
+initializeWith: anAccount
+	self subclassResponsibility ! !
+
+!AccountReport methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 17:00:50'!
+registerDeposit: aDeposit 
+	self subclassResponsibility ! !
+
+!AccountReport methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 17:01:36'!
+registerDepositLeg: anAccountTransferDepositLeg 
+	self subclassResponsibility ! !
+
+!AccountReport methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 17:01:47'!
+registerWithdraw: anAccountWithdraw 
+	self subclassResponsibility ! !
+
+!AccountReport methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 17:02:01'!
+registerWithdrawLeg: anAccountTransferWithdrawLeg 
+	self subclassResponsibility ! !
+
+
+!classDefinition: #AccountSummary category: 'ServiciosFinancieros-Solucion'!
+AccountReport subclass: #AccountSummary
+	instanceVariableNames: 'account summary'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!AccountSummary methodsFor: 'initialization' stamp: 'TSS 6/15/2022 16:50:35'!
+initialize
+	summary := OrderedCollection new.! !
+
+!AccountSummary methodsFor: 'initialization' stamp: 'TSS 6/15/2022 17:02:17'!
 initializeWith: anAccount 
-	account := anAccount.! !
+	account := anAccount.
+	! !
 
 
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'TSS 6/14/2022 21:13:03'!
+!AccountSummary methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:57:38'!
 displaySummary
-	|summary|
-	
-	summary := OrderedCollection new.
-	
-	account transactions do:[:aTransaction| 
-	(aTransaction isKindOf: Deposit) ifTrue:[summary add: ('Depósito por ', aTransaction value asString)].
-	(aTransaction isKindOf: Withdraw ) ifTrue:[summary add: ('Extracción por ', aTransaction value asString)].
-	(aTransaction isKindOf: TransferDepositLeg ) ifTrue:[summary add: ('Entrada por transferencia de ',  	aTransaction value asString)].
-	(aTransaction isKindOf: TransferWithdrawLeg ) ifTrue:[summary add: ('Salida por transferencia de ',  	aTransaction value asString)].
-	].	
+
+	account transactions do:[:aTransaction| aTransaction toBeRegisteredOn: self. ].	
 	summary add: ('Balance = ', account balance asString).
 	^summary ! !
+
+!AccountSummary methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:27:48'!
+registerDeposit: anAccountDeposit 
+	summary add: ('Depósito por ', anAccountDeposit value asString)! !
+
+!AccountSummary methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:36:14'!
+registerDepositLeg: anAccountTransferDepositLeg 
+	summary add: ('Entrada por transferencia de ', anAccountTransferDepositLeg value asString)! !
+
+!AccountSummary methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:29:56'!
+registerWithdraw: anAccountWithdraw 
+	summary add: ('Extracción por ', anAccountWithdraw value asString)! !
+
+!AccountSummary methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:34:02'!
+registerWithdrawLeg: anAccountTransferWithdrawLeg 
+	summary add: ('Salida por transferencia de ', anAccountTransferWithdrawLeg value asString)! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -816,6 +895,58 @@ AccountSummary class
 	instanceVariableNames: ''!
 
 !AccountSummary class methodsFor: 'instance creation' stamp: 'TSS 6/14/2022 21:00:24'!
+of: anAccount 
+	^self new initializeWith: anAccount ! !
+
+
+!classDefinition: #TransferNet category: 'ServiciosFinancieros-Solucion'!
+AccountReport subclass: #TransferNet
+	instanceVariableNames: 'account totalTransferNet'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!TransferNet methodsFor: 'initialization' stamp: 'TSS 6/15/2022 16:51:54'!
+initialize
+	totalTransferNet := 0*peso! !
+
+!TransferNet methodsFor: 'initialization' stamp: 'TSS 6/15/2022 16:50:11'!
+initializeWith: anAccount 
+	account := anAccount.! !
+
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:57:14'!
+displayTransferNet
+	
+	account transactions do: [:aTransaction| aTransaction toBeRegisteredOn: self].
+	
+	^totalTransferNet 
+	
+	! !
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:56:49'!
+registerDeposit: aDeposit 
+	totalTransferNet := totalTransferNet + 0! !
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:53:54'!
+registerDepositLeg: aTransferDepositLeg 
+	totalTransferNet := totalTransferNet + aTransferDepositLeg value.! !
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:55:30'!
+registerWithdraw: aWithdraw 
+	totalTransferNet := totalTransferNet + 0! !
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:54:33'!
+registerWithdrawLeg: aTransferWithdrawLeg 
+	totalTransferNet := totalTransferNet - aTransferWithdrawLeg value.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TransferNet class' category: 'ServiciosFinancieros-Solucion'!
+TransferNet class
+	instanceVariableNames: ''!
+
+!TransferNet class methodsFor: 'instance creation' stamp: 'TSS 6/14/2022 21:35:38'!
 of: anAccount 
 	^self new initializeWith: anAccount ! !
 
@@ -836,6 +967,11 @@ value
 !AccountTransaction methodsFor: 'balance' stamp: 'HAW 5/25/2019 11:25:39'!
 affectBalance: aBalance
 
+	self subclassResponsibility ! !
+
+
+!AccountTransaction methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:59:07'!
+toBeRegisteredOn: anAccountReport
 	self subclassResponsibility ! !
 
 
@@ -862,6 +998,12 @@ value
 affectBalance: aBalance
 
 	^aBalance + value ! !
+
+
+!Deposit methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:21:20'!
+toBeRegisteredOn: anAccountReport
+	anAccountReport registerDeposit: self.
+	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -904,6 +1046,11 @@ initializeWith: aTransfer
 
 	transfer := aTransfer! !
 
+
+!TransferLeg methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:59:23'!
+toBeRegisteredOn: anAccountReport
+	self subclassResponsibility ! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'TransferLeg class' category: 'ServiciosFinancieros-Solucion'!
@@ -939,6 +1086,11 @@ affectBalance: aBalance
 
 	^aBalance + self value! !
 
+
+!TransferDepositLeg methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:34:55'!
+toBeRegisteredOn: anAccountReport
+	anAccountReport registerDepositLeg: self! !
+
 
 !classDefinition: #TransferWithdrawLeg category: 'ServiciosFinancieros-Solucion'!
 TransferLeg subclass: #TransferWithdrawLeg
@@ -957,6 +1109,11 @@ depositLeg
 affectBalance: aBalance
 
 	^aBalance - self value! !
+
+
+!TransferWithdrawLeg methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:32:43'!
+toBeRegisteredOn: anAccountReport
+	anAccountReport registerWithdrawLeg: self! !
 
 
 !classDefinition: #Withdraw category: 'ServiciosFinancieros-Solucion'!
@@ -982,6 +1139,11 @@ value
 affectBalance: aBalance
 
 	^aBalance - value! !
+
+
+!Withdraw methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:28:57'!
+toBeRegisteredOn: anAccountReport 
+	anAccountReport registerWithdraw: self.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1097,37 +1259,3 @@ amount: anAmountOfMoney from: originAccount to: destinationAccount
 	
 	
 	! !
-
-
-!classDefinition: #TransferNet category: 'ServiciosFinancieros-Solucion'!
-Object subclass: #TransferNet
-	instanceVariableNames: 'account'
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'ServiciosFinancieros-Solucion'!
-
-!TransferNet methodsFor: 'initialization' stamp: 'TSS 6/14/2022 21:35:38'!
-initializeWith: anAccount 
-	account := anAccount.! !
-
-
-!TransferNet methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 15:47:34'!
-displayTransferNet
-	|transferTransactions|
-	
-	transferTransactions := OrderedCollection new.
-	account transactions do: [:aTransaction| 
-		((aTransaction isKindOf: TransferWithdrawLeg) or: (aTransaction isKindOf: TransferDepositLeg )) ifTrue:  		[transferTransactions add: aTransaction ]].
-	
-	^transferTransactions sum: [:aTransaction| (aTransaction isKindOf: TransferDepositLeg) 
-		ifTrue:(aTransaction value) ifFalse: (aTransaction value negated) ] ifEmpty: 0*peso! !
-
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'TransferNet class' category: 'ServiciosFinancieros-Solucion'!
-TransferNet class
-	instanceVariableNames: ''!
-
-!TransferNet class methodsFor: 'instance creation' stamp: 'TSS 6/14/2022 21:35:38'!
-of: anAccount 
-	^self new initializeWith: anAccount ! !
