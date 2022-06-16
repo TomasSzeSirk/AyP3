@@ -487,7 +487,7 @@ TestCase subclass: #TransferTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 21:07:03'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 21:07:03'!
 test01ATransferDecreasesBalanceFromOriginAccountAndIncreasesItForDestinationAccount
 
 	| destinationAccount originAccount |
@@ -503,7 +503,7 @@ test01ATransferDecreasesBalanceFromOriginAccountAndIncreasesItForDestinationAcco
 	self assert: 8 * peso equals: originAccount balance.
 	self assert: 12 * peso equals: destinationAccount balance.! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 21:12:28'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 21:12:28'!
 test02ATransferKnowsItsValue
 
 	| destinationAccount originAccount transfer |
@@ -518,7 +518,7 @@ test02ATransferKnowsItsValue
 	
 	self assert: 2 * peso equals: transfer value.! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:01:44'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:01:44'!
 test03DepositLegKnowsItsWithdrawCounterpart
 
 	| destinationAccount originAccount transfer |
@@ -533,7 +533,7 @@ test03DepositLegKnowsItsWithdrawCounterpart
 	
 	self assert: transfer withdrawLeg equals: transfer depositLeg withdrawLeg! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:01:51'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:01:51'!
 test04WithdrawLegKnowsItsDepositCounterpart
 
 	| destinationAccount originAccount transfer |
@@ -548,7 +548,7 @@ test04WithdrawLegKnowsItsDepositCounterpart
 	
 	self assert: transfer depositLeg equals: transfer withdrawLeg depositLeg! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:02:36'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:02:36'!
 test05OriginAndDestinationAccountsCannotBeTheSame
 
 	| originAccount |
@@ -564,7 +564,7 @@ test05OriginAndDestinationAccountsCannotBeTheSame
 		]
 ! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:02:44'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:02:44'!
 test06CannotTransferAZeroAmount
 
 	| originAccount destinationAccount |
@@ -823,27 +823,28 @@ Object subclass: #AccountReport
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!AccountReport methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 17:00:12'!
+!AccountReport methodsFor: 'initialization' stamp: 'TSS 6/15/2022 17:00:12'!
 initialize
 	self subclassResponsibility ! !
 
-!AccountReport methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 17:00:30'!
+!AccountReport methodsFor: 'initialization' stamp: 'TSS 6/15/2022 17:00:30'!
 initializeWith: anAccount
 	self subclassResponsibility ! !
 
-!AccountReport methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 17:00:50'!
+
+!AccountReport methodsFor: 'register in report' stamp: 'TSS 6/15/2022 17:00:50'!
 registerDeposit: aDeposit 
 	self subclassResponsibility ! !
 
-!AccountReport methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 17:01:36'!
+!AccountReport methodsFor: 'register in report' stamp: 'TSS 6/15/2022 17:01:36'!
 registerDepositLeg: anAccountTransferDepositLeg 
 	self subclassResponsibility ! !
 
-!AccountReport methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 17:01:47'!
+!AccountReport methodsFor: 'register in report' stamp: 'TSS 6/15/2022 17:01:47'!
 registerWithdraw: anAccountWithdraw 
 	self subclassResponsibility ! !
 
-!AccountReport methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 17:02:01'!
+!AccountReport methodsFor: 'register in report' stamp: 'TSS 6/15/2022 17:02:01'!
 registerWithdrawLeg: anAccountTransferWithdrawLeg 
 	self subclassResponsibility ! !
 
@@ -865,26 +866,27 @@ initializeWith: anAccount
 	! !
 
 
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:57:38'!
+!AccountSummary methodsFor: 'main function' stamp: 'TSS 6/15/2022 16:57:38'!
 displaySummary
 
 	account transactions do:[:aTransaction| aTransaction toBeRegisteredOn: self. ].	
 	summary add: ('Balance = ', account balance asString).
 	^summary ! !
 
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:27:48'!
+
+!AccountSummary methodsFor: 'register in report' stamp: 'TSS 6/15/2022 16:27:48'!
 registerDeposit: anAccountDeposit 
 	summary add: ('Depósito por ', anAccountDeposit value asString)! !
 
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:36:14'!
+!AccountSummary methodsFor: 'register in report' stamp: 'TSS 6/15/2022 16:36:14'!
 registerDepositLeg: anAccountTransferDepositLeg 
 	summary add: ('Entrada por transferencia de ', anAccountTransferDepositLeg value asString)! !
 
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:29:56'!
+!AccountSummary methodsFor: 'register in report' stamp: 'TSS 6/15/2022 16:29:56'!
 registerWithdraw: anAccountWithdraw 
 	summary add: ('Extracción por ', anAccountWithdraw value asString)! !
 
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:34:02'!
+!AccountSummary methodsFor: 'register in report' stamp: 'TSS 6/15/2022 16:34:02'!
 registerWithdrawLeg: anAccountTransferWithdrawLeg 
 	summary add: ('Salida por transferencia de ', anAccountTransferWithdrawLeg value asString)! !
 
@@ -915,7 +917,7 @@ initializeWith: anAccount
 	account := anAccount.! !
 
 
-!TransferNet methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:57:14'!
+!TransferNet methodsFor: 'main function' stamp: 'TSS 6/15/2022 16:57:14'!
 displayTransferNet
 	
 	account transactions do: [:aTransaction| aTransaction toBeRegisteredOn: self].
@@ -924,19 +926,20 @@ displayTransferNet
 	
 	! !
 
-!TransferNet methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:56:49'!
+
+!TransferNet methodsFor: 'register in report' stamp: 'TSS 6/15/2022 16:56:49'!
 registerDeposit: aDeposit 
 	totalTransferNet := totalTransferNet + 0! !
 
-!TransferNet methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:53:54'!
+!TransferNet methodsFor: 'register in report' stamp: 'TSS 6/15/2022 16:53:54'!
 registerDepositLeg: aTransferDepositLeg 
 	totalTransferNet := totalTransferNet + aTransferDepositLeg value.! !
 
-!TransferNet methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:55:30'!
+!TransferNet methodsFor: 'register in report' stamp: 'TSS 6/15/2022 16:55:30'!
 registerWithdraw: aWithdraw 
 	totalTransferNet := totalTransferNet + 0! !
 
-!TransferNet methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:54:33'!
+!TransferNet methodsFor: 'register in report' stamp: 'TSS 6/15/2022 16:54:33'!
 registerWithdrawLeg: aTransferWithdrawLeg 
 	totalTransferNet := totalTransferNet - aTransferWithdrawLeg value.! !
 
@@ -970,7 +973,7 @@ affectBalance: aBalance
 	self subclassResponsibility ! !
 
 
-!AccountTransaction methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:59:07'!
+!AccountTransaction methodsFor: 'report' stamp: 'TSS 6/15/2022 16:59:07'!
 toBeRegisteredOn: anAccountReport
 	self subclassResponsibility ! !
 
@@ -1000,7 +1003,7 @@ affectBalance: aBalance
 	^aBalance + value ! !
 
 
-!Deposit methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:21:20'!
+!Deposit methodsFor: 'report' stamp: 'TSS 6/15/2022 16:21:20'!
 toBeRegisteredOn: anAccountReport
 	anAccountReport registerDeposit: self.
 	! !
@@ -1047,7 +1050,7 @@ initializeWith: aTransfer
 	transfer := aTransfer! !
 
 
-!TransferLeg methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:59:23'!
+!TransferLeg methodsFor: 'report' stamp: 'TSS 6/15/2022 16:59:23'!
 toBeRegisteredOn: anAccountReport
 	self subclassResponsibility ! !
 
@@ -1087,7 +1090,7 @@ affectBalance: aBalance
 	^aBalance + self value! !
 
 
-!TransferDepositLeg methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:34:55'!
+!TransferDepositLeg methodsFor: 'report' stamp: 'TSS 6/15/2022 16:34:55'!
 toBeRegisteredOn: anAccountReport
 	anAccountReport registerDepositLeg: self! !
 
@@ -1111,7 +1114,7 @@ affectBalance: aBalance
 	^aBalance - self value! !
 
 
-!TransferWithdrawLeg methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:32:43'!
+!TransferWithdrawLeg methodsFor: 'report' stamp: 'TSS 6/15/2022 16:32:43'!
 toBeRegisteredOn: anAccountReport
 	anAccountReport registerWithdrawLeg: self! !
 
@@ -1141,7 +1144,7 @@ affectBalance: aBalance
 	^aBalance - value! !
 
 
-!Withdraw methodsFor: 'as yet unclassified' stamp: 'TSS 6/15/2022 16:28:57'!
+!Withdraw methodsFor: 'report' stamp: 'TSS 6/15/2022 16:28:57'!
 toBeRegisteredOn: anAccountReport 
 	anAccountReport registerWithdraw: self.! !
 
